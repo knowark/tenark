@@ -1,6 +1,6 @@
 from pytest import fixture, raises
 from tenark.tenant import Tenant
-from tenark.exceptions import TenantCreationError, TenantLocationError
+from tenark.common import TenantCreationError, TenantLocationError
 
 
 @fixture

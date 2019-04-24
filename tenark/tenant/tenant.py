@@ -1,7 +1,7 @@
 import time
 import unicodedata
 from typing import Mapping
-from .exceptions import TenantLocationError, TenantCreationError
+from ..common import TenantLocationError, TenantCreationError
 
 
 class Tenant:
