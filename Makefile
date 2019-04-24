@@ -8,3 +8,8 @@ test:
 
 coverage: 
 	pytest -x --cov=tenark tests/ --cov-report term-missing -s
+
+PART ?= patch
+
+version:
+	bump2version $(PART) tenark/__init__.py --tag --commit
