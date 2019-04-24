@@ -12,4 +12,4 @@ coverage:
 PART ?= patch
 
 version:
-	bump2version $(PART) tenark/__init__.py --tag --commit
+	bump2version $(PART) pyproject.toml tenark/__init__.py --tag --commit
