@@ -19,3 +19,7 @@ class TenantCreationError(TenantError):
 
 class TenantRetrievalError(TenantError):
     """The tenant couldn't be found."""
+
+
+class TenantProvisionError(TenantError):
+    """The tenant couldn't be provisioned."""
