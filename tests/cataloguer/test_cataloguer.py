@@ -1,9 +1,9 @@
 from pytest import fixture, raises
-from tenark.catalog import CatalogSupplier
+from tenark.cataloguer import Cataloguer
 
 
-def test_catalog_supplier_methods():
-    abstract_methods = CatalogSupplier.__abstractmethods__
+def test_cataloguer_methods():
+    abstract_methods = Cataloguer.__abstractmethods__
 
     assert 'setup' in abstract_methods
     assert 'add_tenant' in abstract_methods

@@ -1,5 +1,5 @@
 from pytest import fixture, raises
-from tenark.tenant import Tenant
+from tenark.models import Tenant
 from tenark.common import TenantCreationError, TenantLocationError
 
 

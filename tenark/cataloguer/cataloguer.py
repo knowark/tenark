@@ -2,10 +2,10 @@ from uuid import uuid4
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any, Optional
 from ..common import QueryParser, QueryDomain
-from ..tenant import Tenant
+from ..models import Tenant
 
 
-class CatalogSupplier(ABC):
+class Cataloguer(ABC):
     """Tenant Catalog Supplier."""
 
     @abstractmethod

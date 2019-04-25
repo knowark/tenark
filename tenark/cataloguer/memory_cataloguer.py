@@ -2,11 +2,11 @@ from uuid import uuid4
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any, Optional
 from ..common import QueryParser, QueryDomain
-from ..tenant import Tenant
-from .catalog_supplier import CatalogSupplier
+from ..models import Tenant
+from .cataloguer import Cataloguer
 
 
-class MemoryCatalogSupplier(CatalogSupplier):
+class MemoryCataloguer(Cataloguer):
 
     def __init__(self, parser: QueryParser) -> None:
         self.catalog: Optional[Dict] = None
