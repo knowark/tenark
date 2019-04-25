@@ -11,10 +11,6 @@ class Arranger:
         self.cataloguer = cataloguer
         self.provisioner = provisioner
 
-    def setup_server(self):
-        self.cataloguer.setup()
-        self.provisioner.setup()
-
     def create_tenant(self, tenant_dict: Dict[str, Any]) -> None:
         tenant = Tenant(**tenant_dict)
         domain = ['|', ('slug', '=', tenant.slug),

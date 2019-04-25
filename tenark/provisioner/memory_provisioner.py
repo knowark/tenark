@@ -9,15 +9,8 @@ from .provisioner import Provisioner
 class MemoryProvisioner(Provisioner):
 
     def __init__(self) -> None:
-        self.pool: Optional[Dict] = None
-
-    def setup(self) -> bool:
-        self.pool = {}
-        return True
+        self.pool: Dict[str, Tenant] = {}
 
     def provision_tenant(self, tenant: Tenant) -> None:
         tenant.id = tenant.id or str(uuid4())
-        if self.pool is None:
-            raise TenantProvisionError(
-                "Setup the provisioning environment first.")
         self.pool[tenant.id] = tenant

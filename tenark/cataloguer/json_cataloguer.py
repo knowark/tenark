@@ -30,7 +30,6 @@ class JsonCataloguer(Cataloguer):
 
     def add_tenant(self, tenant: Tenant) -> Tenant:
         path = Path(self.path)
-        print('PATH>>>>', path, path.exists())
         if not path.exists():
             raise TenantCatalogError(
                 f"The tenant catalog file <${self.path}> doesn't exist.")

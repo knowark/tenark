@@ -9,10 +9,6 @@ class Cataloguer(ABC):
     """Tenant Catalog Supplier."""
 
     @abstractmethod
-    def setup(self) -> bool:
-        "Setup method to be implemented."
-
-    @abstractmethod
     def add_tenant(self, tenant: Tenant) -> Tenant:
         "Add tenant method to be implemented."
 
