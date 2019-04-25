@@ -23,3 +23,7 @@ class TenantRetrievalError(TenantError):
 
 class TenantProvisionError(TenantError):
     """The tenant couldn't be provisioned."""
+
+
+class TenantCatalogError(TenantError):
+    """The tenant couldn't be provisioned."""

@@ -1,5 +1,5 @@
 from pytest import fixture, raises
-from tenark.common import QueryParser
+from tenark.common import QueryParser, TenantCatalogError
 from tenark.models import Tenant
 from tenark.cataloguer import MemoryCataloguer
 
@@ -24,7 +24,7 @@ def test_memory_cataloguer_add_tenant(cataloguer):
 
 def test_memory_cataloguer_add_tenant_no_setup(cataloguer):
     tenant = Tenant(name='Microsoft')
-    with raises(ValueError):
+    with raises(TenantCatalogError):
         cataloguer.add_tenant(tenant)
 
 
@@ -81,5 +81,5 @@ def test_memory_cataloguer_get_tenant_not_found(
 
 def test_memory_cataloguer_get_tenant_not_setup(
         cataloguer: MemoryCataloguer):
-    with raises(ValueError):
+    with raises(TenantCatalogError):
         cataloguer.get_tenant('001')

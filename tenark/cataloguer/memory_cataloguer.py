@@ -1,7 +1,7 @@
 from uuid import uuid4
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any, Optional
-from ..common import QueryParser, QueryDomain
+from ..common import QueryParser, QueryDomain, TenantCatalogError
 from ..models import Tenant
 from .cataloguer import Cataloguer
 
@@ -19,13 +19,13 @@ class MemoryCataloguer(Cataloguer):
     def add_tenant(self, tenant: Tenant) -> Tenant:
         tenant.id = tenant.id or str(uuid4())
         if self.catalog is None:
-            raise ValueError("Setup the tenant catalog first.")
+            raise TenantCatalogError("Setup the tenant catalog first.")
         self.catalog[tenant.id] = tenant
         return tenant
 
     def get_tenant(self, tenant_id: str) -> Tenant:
         if self.catalog is None:
-            raise ValueError("Setup the tenant catalog first.")
+            raise TenantCatalogError("Setup the tenant catalog first.")
 
         tenant = self.catalog.get(tenant_id)
 
