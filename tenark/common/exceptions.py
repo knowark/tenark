@@ -15,3 +15,7 @@ class TenantLocationError(TenantError):
 
 class TenantCreationError(TenantError):
     """The tenant couldn't be created."""
+
+
+class TenantRetrievalError(TenantError):
+    """The tenant couldn't be found."""
