@@ -2,7 +2,7 @@ from typing import Dict, List, Optional, Any
 from .models import Tenant
 from .cataloguer import Cataloguer
 from .provisioner import Provisioner
-from .common import TenantCreationError
+from .common import QueryDomain, TenantCreationError
 
 
 class Arranger:
@@ -13,10 +13,9 @@ class Arranger:
 
     def create_tenant(self, tenant_dict: Dict[str, Any]) -> None:
         tenant = Tenant(**tenant_dict)
-        domain = ['|', ('slug', '=', tenant.slug),
-                  ('name', '=', tenant.name)]
-        duplicates = self.cataloguer.search_tenants(  # type: ignore
-            domain)
+        domain: QueryDomain = ['|', ('slug', '=', tenant.slug),
+                               ('name', '=', tenant.name)]
+        duplicates = self.cataloguer.search_tenants(domain)
 
         if duplicates:
             raise TenantCreationError(

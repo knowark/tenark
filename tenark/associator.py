@@ -1,5 +1,5 @@
 from typing import Dict, Any
-from .common import TenantRetrievalError
+from .common import QueryDomain, TenantRetrievalError
 from .cataloguer import Cataloguer
 from .provider import Provider
 
@@ -16,8 +16,9 @@ class Associator:
         self.provider.setup(tenant)
 
     def resolve_tenant(self, tenant: str) -> None:
-        domain = ['|', ('slug', '=', tenant), ('name', '=', tenant)]
-        entities = self.cataloguer.search_tenants(domain)  # type: ignore
+        domain: QueryDomain = ['|', ('slug', '=', tenant),
+                               ('name', '=', tenant)]
+        entities = self.cataloguer.search_tenants(domain)
         if not entities:
             raise TenantRetrievalError("Tenant not found.")
 
