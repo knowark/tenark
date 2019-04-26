@@ -12,5 +12,4 @@ class MemoryProvisioner(Provisioner):
         self.pool: Dict[str, Tenant] = {}
 
     def provision_tenant(self, tenant: Tenant) -> None:
-        tenant.id = tenant.id or str(uuid4())
         self.pool[tenant.id] = tenant
