@@ -3,7 +3,8 @@ from pathlib import Path
 from uuid import uuid4
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any, Optional
-from ..common import QueryParser, QueryDomain, TenantCatalogError
+from ..common import (
+    QueryParser, QueryDomain, TenantCatalogError, TenantRetrievalError)
 from ..models import Tenant
 from .cataloguer import Cataloguer
 
@@ -17,24 +18,28 @@ class JsonCataloguer(Cataloguer):
         self.catalog_schema: Dict = {
             self.collection: {}
         }
+        self._setup()
 
-    def setup(self) -> bool:
+    def _setup(self) -> None:
         catalog_file = Path(self.path)
-        if catalog_file.exists():
-            return False
 
-        with catalog_file.open('w') as f:
+        if not catalog_file.exists():
+            with catalog_file.open('w') as f:
+                json.dump(self.catalog_schema, f, indent=2)
+            return
+
+        with catalog_file.open('r+') as f:
+            try:
+                data = json.load(f)
+                if self.collection in data:
+                    return
+            except json.JSONDecodeError as e:
+                pass
+
             json.dump(self.catalog_schema, f, indent=2)
-
-        return True
 
     def add_tenant(self, tenant: Tenant) -> Tenant:
         path = Path(self.path)
-        if not path.exists():
-            raise TenantCatalogError(
-                f"The tenant catalog file <${self.path}> doesn't exist.")
-
-        # data: Dict[str, Any] = {}
         with path.open() as f:
             try:
                 data = json.load(f)
@@ -57,7 +62,7 @@ class JsonCataloguer(Cataloguer):
             tenants = data.get(self.collection, {})
             tenant_dict = tenants.get(tenant_id)
             if not tenant_dict:
-                raise ValueError(
+                raise TenantRetrievalError(
                     f"The entity with id {tenant_id} was not found.")
             return Tenant(**tenant_dict)
 
