@@ -1,30 +1,67 @@
-from tenark.cataloguer import MemoryCataloguer
-from tenark.provisioner import MemoryProvisioner
+from pytest import raises
+from tenark.cataloguer import MemoryCataloguer, JsonCataloguer
+from tenark.provisioner import MemoryProvisioner, DirectoryProvisioner
 from tenark.provider import StandardProvider
 from tenark.associator import Associator
 from tenark.arranger import Arranger
 from tenark import resolver
 
 
-def test_resolver_resolve_catalog():
-    cataloguer = resolver.resolve_cataloguer()
+def test_resolver_resolve_cataloguer_no_options():
+    options = {}
+    cataloguer = resolver.resolve_cataloguer(options)
+
     assert isinstance(cataloguer, MemoryCataloguer)
 
 
-def test_resolver_resolve_provisioner():
-    provisioner = resolver.resolve_provisioner()
+def test_resolver_resolve_cataloguer_json(monkeypatch):
+    monkeypatch.setattr(JsonCataloguer, '_setup', lambda self: None)
+    options = {
+        'cataloguer_kind': 'json'
+    }
+    with raises(KeyError):
+        cataloguer = resolver.resolve_cataloguer(options)
+    options['catalog_path'] = '/home/user/tenants.json'
+    cataloguer = resolver.resolve_cataloguer(options)
+
+    assert isinstance(cataloguer, JsonCataloguer)
+
+
+def test_resolver_resolve_provisioner_no_options():
+    options = {}
+    provisioner = resolver.resolve_provisioner(options)
+
     assert isinstance(provisioner, MemoryProvisioner)
 
 
+def test_resolver_resolve_provisioner_directory():
+    options = {
+        'provisioner_kind': 'directory'
+    }
+    with raises(KeyError):
+        cataloguer = resolver.resolve_provisioner(options)
+    options['provision_template'] = '/home/user/templates/__template__'
+    with raises(KeyError):
+        cataloguer = resolver.resolve_provisioner(options)
+    options['data_directory'] = '/home/user/data'
+    provisioner = resolver.resolve_provisioner(options)
+
+    assert isinstance(provisioner, DirectoryProvisioner)
+
+
 def test_resolver_resolve_arranger():
-    arranger = resolver.resolve_arranger()
+    options = {}
+    arranger = resolver.resolve_arranger(options)
+
     assert isinstance(arranger, Arranger)
     assert isinstance(arranger.cataloguer, MemoryCataloguer)
     assert isinstance(arranger.provisioner, MemoryProvisioner)
 
 
 def test_resolver_resolve_associator():
-    associator = resolver.resolve_associator()
+    options = {}
+    associator = resolver.resolve_associator({})
+
     assert isinstance(associator, Associator)
     assert isinstance(associator.cataloguer, MemoryCataloguer)
     assert isinstance(associator.provider, StandardProvider)
