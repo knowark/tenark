@@ -9,14 +9,16 @@ class Provider:
     def __init__(self, cataloguer: Cataloguer) -> None:
         self.cataloguer = cataloguer
 
-    def get_tenant(self, tenant_id: str) -> Tenant:
-        return self.cataloguer.get_tenant(tenant_id)
+    def get_tenant(self, tenant_id: str) -> Dict[str, Any]:
+        tenant = self.cataloguer.get_tenant(tenant_id)
+        return vars(tenant)
 
-    def resolve_tenant(self, tenant: str) -> Tenant:
-        domain: QueryDomain = ['|', ('slug', '=', tenant),
-                               ('name', '=', tenant)]
+    def resolve_tenant(self, name: str) -> Dict[str, Any]:
+        domain: QueryDomain = ['|', ('slug', '=', name),
+                               ('name', '=', name)]
         entities = self.cataloguer.search_tenants(domain)
         if not entities:
             raise TenantRetrievalError("Tenant not found.")
 
-        return entities.pop()
+        tenant = entities.pop()
+        return vars(tenant)
