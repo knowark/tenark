@@ -4,13 +4,8 @@ from .cataloguer import (
     Cataloguer, MemoryCataloguer, JsonCataloguer)
 from .provisioner import (
     Provisioner, MemoryProvisioner, DirectoryProvisioner)
-from .provider import Provider, StandardProvider
-from .associator import Associator
+from .provider import Provider
 from .arranger import Arranger
-
-
-def resolve_provider(options: Dict[str, str]) -> Provider:
-    return StandardProvider()
 
 
 def resolve_cataloguer(options: Dict[str, str]) -> Cataloguer:
@@ -45,8 +40,7 @@ def resolve_arranger(options: Dict[str, str]) -> Arranger:
     return arranger
 
 
-def resolve_associator(options: Dict[str, str]) -> Associator:
+def resolve_provider(options: Dict[str, str]) -> Provider:
     cataloguer = resolve_cataloguer(options)
-    provider = resolve_provider(options)
-    associator = Associator(cataloguer, provider)
-    return associator
+    provider = Provider(cataloguer)
+    return provider

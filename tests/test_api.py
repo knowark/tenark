@@ -1,11 +1,11 @@
-from tenark.api import build_arranger, build_associator
-from tenark.associator import Associator
+from tenark.api import build_arranger, build_provider
+from tenark.provider import Provider
 from tenark.arranger import Arranger
 
 
-def test_api_build_associator():
-    associator = build_associator()
-    assert isinstance(associator, Associator)
+def test_api_build_provider():
+    provider = build_provider()
+    assert isinstance(provider, Provider)
 
 
 def test_api_build_arranger():

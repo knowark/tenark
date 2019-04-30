@@ -1,8 +1,7 @@
 from pytest import raises
 from tenark.cataloguer import MemoryCataloguer, JsonCataloguer
 from tenark.provisioner import MemoryProvisioner, DirectoryProvisioner
-from tenark.provider import StandardProvider
-from tenark.associator import Associator
+from tenark.provider import Provider
 from tenark.arranger import Arranger
 from tenark import resolver
 
@@ -58,10 +57,9 @@ def test_resolver_resolve_arranger():
     assert isinstance(arranger.provisioner, MemoryProvisioner)
 
 
-def test_resolver_resolve_associator():
+def test_resolver_resolve_provider():
     options = {}
-    associator = resolver.resolve_associator({})
+    provider = resolver.resolve_provider({})
 
-    assert isinstance(associator, Associator)
-    assert isinstance(associator.cataloguer, MemoryCataloguer)
-    assert isinstance(associator.provider, StandardProvider)
+    assert isinstance(provider, Provider)
+    assert isinstance(provider.cataloguer, MemoryCataloguer)

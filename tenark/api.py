@@ -1,11 +1,11 @@
 from .arranger import Arranger
-from .associator import Associator
-from .resolver import resolve_associator, resolve_arranger
+from .provider import Provider
+from .resolver import resolve_provider, resolve_arranger
 
 
-def build_associator(**options) -> Associator:
-    associator = resolve_associator(options)
-    return associator
+def build_provider(**options) -> Provider:
+    provider = resolve_provider(options)
+    return provider
 
 
 def build_arranger(**options) -> Arranger:
