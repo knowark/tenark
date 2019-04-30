@@ -23,7 +23,11 @@ def test_tenant_default_attributes(tenant: Tenant) -> None:
 def test_tenant_attributes_from_dict() -> None:
     tenant_dict = {
         "id": "farbo007",
-        "name": "Hortofrutícola El Cariño"
+        "name": "Hortofrutícola El Cariño",
+        "attributes": {
+            "field_1": "value_1",
+            "field_2": "value_2",
+        }
     }
 
     tenant = Tenant(**tenant_dict)
