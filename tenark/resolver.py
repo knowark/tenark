@@ -20,7 +20,7 @@ def resolve_cataloguer(options: Dict[str, Any]) -> Cataloguer:
     return cataloguer
 
 
-def resolve_provisioner(options: Dict[str, str]) -> Provisioner:
+def resolve_provisioner(options: Dict[str, Any]) -> Provisioner:
     parser = QueryParser()
     provisioner: Optional[Provisioner] = None
     if options.get('provisioner_kind') == 'directory':
@@ -33,14 +33,14 @@ def resolve_provisioner(options: Dict[str, str]) -> Provisioner:
     return provisioner
 
 
-def resolve_arranger(options: Dict[str, str]) -> Arranger:
-    cataloguer = resolve_cataloguer(options)
-    provisioner = resolve_provisioner(options)
+def resolve_arranger(options: Dict[str, Any]) -> Arranger:
+    cataloguer = options.get('cataloguer', resolve_cataloguer(options))
+    provisioner = options.get('provisioner', resolve_provisioner(options))
     arranger = Arranger(cataloguer, provisioner)
     return arranger
 
 
-def resolve_provider(options: Dict[str, str]) -> Provider:
-    cataloguer = resolve_cataloguer(options)
+def resolve_provider(options: Dict[str, Any]) -> Provider:
+    cataloguer = options.get('cataloguer', resolve_cataloguer(options))
     provider = Provider(cataloguer)
     return provider
