@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict, Any, Optional
 from .common import QueryParser
 from .cataloguer import (
     Cataloguer, MemoryCataloguer, JsonCataloguer)
@@ -8,7 +8,7 @@ from .provider import Provider
 from .arranger import Arranger
 
 
-def resolve_cataloguer(options: Dict[str, str]) -> Cataloguer:
+def resolve_cataloguer(options: Dict[str, Any]) -> Cataloguer:
     parser = QueryParser()
     cataloguer: Optional[Cataloguer] = None
     if options.get('cataloguer_kind') == 'json':

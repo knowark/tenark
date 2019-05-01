@@ -25,7 +25,7 @@ def test_provider_get_tenant(provider):
         '003': Tenant(name='Microsoft')
     }
     tenant = provider.get_tenant(tenant_id)
-    assert tenant.slug == 'amazon'
+    assert tenant['slug'] == 'amazon'
 
 
 def test_provider_resolve_tenant(provider):
@@ -35,10 +35,10 @@ def test_provider_resolve_tenant(provider):
         '003': Tenant(name='Microsoft')
     }
     tenant = provider.resolve_tenant('microsoft')
-    assert tenant.slug == 'microsoft'
+    assert tenant['slug'] == 'microsoft'
 
     tenant = provider.resolve_tenant('Google')
-    assert tenant.slug == 'google'
+    assert tenant['slug'] == 'google'
 
 
 def test_provider_resolve_tenant_not_found(
