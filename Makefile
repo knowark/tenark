@@ -25,4 +25,4 @@ devdeploy:
 	sudo apt update
 	sudo apt install -y python3-pip postgresql postgresql-server-dev-all
 	sudo python3 -m pip install mypy pytest pytest-cov psycopg2
-	sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"
+	sudo -Hiu postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"
