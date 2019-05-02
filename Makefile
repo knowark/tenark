@@ -32,3 +32,10 @@ devdeploy:
 	sudo -u postgres dropdb --if-exists tenark
 	sudo -u postgres dropuser --if-exists tenark
 	sudo -u postgres createuser --superuser tenark
+
+setuptravis:
+	sudo id -u tenark &>/dev/null || sudo adduser --system \
+	--home /opt/tenark --shell /bin/bash tenark
+	sudo -u postgres dropdb --if-exists tenark
+	sudo -u postgres dropuser --if-exists tenark
+	sudo -u postgres createuser --superuser tenark

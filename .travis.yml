@@ -1,11 +1,13 @@
 language: python
 cache: pip
+addons:
+  postgresql: "10"
 python:
   - "3.6"
 before_install:
   - sudo apt install make
   - pip install poetry
-  - make devdeploy
+  - make setuptravis
 install:
   - poetry install
 script:
