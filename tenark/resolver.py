@@ -3,7 +3,8 @@ from .common import QueryParser
 from .cataloguer import (
     Cataloguer, MemoryCataloguer, JsonCataloguer)
 from .provisioner import (
-    Provisioner, MemoryProvisioner, DirectoryProvisioner)
+    Provisioner, MemoryProvisioner,
+    DirectoryProvisioner, SchemaProvisioner)
 from .provider import Provider
 from .arranger import Arranger
 
@@ -27,6 +28,9 @@ def resolve_provisioner(options: Dict[str, Any]) -> Provisioner:
         template = options['provision_template']
         data = options['data_directory']
         provisioner = DirectoryProvisioner(template, data)
+    elif options.get('provisioner_kind') == 'schema':
+        uri = options['provision_uri']
+        provisioner = SchemaProvisioner(uri)
     else:
         provisioner = MemoryProvisioner()
 

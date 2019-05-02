@@ -1,6 +1,7 @@
 from pytest import raises
 from tenark.cataloguer import MemoryCataloguer, JsonCataloguer
-from tenark.provisioner import MemoryProvisioner, DirectoryProvisioner
+from tenark.provisioner import (
+    MemoryProvisioner, DirectoryProvisioner, SchemaProvisioner)
 from tenark.provider import Provider
 from tenark.arranger import Arranger
 from tenark import resolver
@@ -46,6 +47,18 @@ def test_resolver_resolve_provisioner_directory():
     provisioner = resolver.resolve_provisioner(options)
 
     assert isinstance(provisioner, DirectoryProvisioner)
+
+
+def test_resolver_resolve_provisioner_schema():
+    options = {
+        'provisioner_kind': 'schema'
+    }
+    with raises(KeyError):
+        cataloguer = resolver.resolve_provisioner(options)
+    options['provision_uri'] = 'postgresql://postgres:postgres@localhost/db'
+    provisioner = resolver.resolve_provisioner(options)
+
+    assert isinstance(provisioner, SchemaProvisioner)
 
 
 def test_resolver_resolve_arranger():
