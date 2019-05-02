@@ -13,7 +13,7 @@ COVFILE ?= .coverage
 coverage: 
 	mypy tenark
 	export COVERAGE_FILE=$(COVFILE); pytest -x --cov=tenark tests/ \
-	--cov-report term-missing -s
+	--cov-report term-missing -s -o cache_dir=/tmp/.pytest_cache
 
 PART ?= patch
 
@@ -26,3 +26,9 @@ devdeploy:
 	apt install -y python3-pip
 	apt install -y postgresql-server-dev-all
 	python3 -m pip install mypy pytest pytest-cov psycopg2
+	id -u tenark &>/dev/null || adduser --system --home /opt/tenark \
+	--shell /bin/bash tenark
+	sudo -u postgres dropdb --if-exists tenark
+	sudo -u postgres dropuser --if-exists tenark
+	sudo -u postgres createuser --superuser tenark
+	# sudo -u postgres createdb -O tenark tenark

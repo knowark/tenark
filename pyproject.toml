@@ -6,7 +6,6 @@ authors = ["Esteban Echeverry <eecheverry@nubark.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
-psycopg2 = "^2.8"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
@@ -15,6 +14,7 @@ pytest-cov = "^2.6"
 pip = "=19.0.3"
 codecov = "^2.0"
 mypy = "^0.701.0"
+psycopg2 = "^2.8"
 
 [build-system]
 requires = ["poetry>=0.12"]
