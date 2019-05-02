@@ -5,14 +5,13 @@ addons:
 python:
   - "3.6"
 before_install:
-  - sudo apt install make
+  - sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"
   - pip install poetry
-  - make setuptravis
 install:
   - poetry install
 script:
-  - sudo -u tenark mypy tenark
-  - "sudo -u tenark pytest --cov-report term-missing
+  - mypy tenark
+  - "sudo -u postgres pytest --cov-report term-missing
     --cov-branch --cov tenark tests"
 after_success:
-  - sudo -u tenark codecov
+  - codecov

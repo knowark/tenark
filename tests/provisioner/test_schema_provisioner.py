@@ -7,14 +7,13 @@ from tenark.provisioner import SchemaProvisioner
 @fixture(scope="session")
 def template_setup():
     database = "tenark"
-    tenark_dsn = f"dbname=postgres user={database}"
-    database_dsn = f"dbname={database} user={database}"
-    with connect(tenark_dsn) as connection:
+    postgres_dsn = f"dbname=postgres user=postgres"
+    database_dsn = f"dbname={database} user=postgres"
+    with connect(postgres_dsn) as connection:
         connection.autocommit = True
         with connection.cursor() as cursor:
             cursor.execute("DROP DATABASE IF EXISTS tenark")
             cursor.execute("CREATE DATABASE tenark")
-            cursor.execute("GRANT ALL PRIVILEGES ON DATABASE tenark TO tenark")
 
     with connect(database_dsn) as connection:
         with connection.cursor() as cursor:
@@ -32,21 +31,20 @@ def template_setup():
 @fixture
 def provisioner(template_setup) -> SchemaProvisioner:
     database = template_setup
-    return SchemaProvisioner(database)
+    uri = f"postgresql://postgres:postgres@localhost/{database}"
+    return SchemaProvisioner(uri=uri)
 
 
 def test_schema_provisioner_setup(provisioner):
-    assert provisioner.database == "tenark"
+    assert 'tenark' in provisioner.uri
     assert provisioner.template == '__template__'
-    assert provisioner.uri == ""
 
 
 def test_schema_provisioner_provision_tenant(provisioner):
     tenant = Tenant(name="Knowark")
     provisioner.provision_tenant(tenant)
 
-    database_dsn = f"dbname={provisioner.database}"
-    with connect(database_dsn) as connection:
+    with connect(provisioner.uri) as connection:
         with connection.cursor() as cursor:
             cursor.execute(
                 "SELECT EXISTS("

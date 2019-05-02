@@ -23,19 +23,6 @@ version:
 devdeploy:
 	# Run as root in the development server
 	sudo apt update
-	sudo apt install -y postgresql
-	sudo apt install -y python3-pip
-	sudo apt install -y postgresql-server-dev-all
+	sudo apt install -y python3-pip postgresql postgresql-server-dev-all
 	sudo python3 -m pip install mypy pytest pytest-cov psycopg2
-	sudo id -u tenark &>/dev/null || sudo adduser --system \
-	--home /opt/tenark --shell /bin/bash tenark
-	sudo -u postgres dropdb --if-exists tenark
-	sudo -u postgres dropuser --if-exists tenark
-	sudo -u postgres createuser --superuser tenark
-
-setuptravis:
-	sudo id -u tenark &>/dev/null || sudo adduser --system \
-	--home /opt/tenark --shell /bin/bash tenark
-	sudo -u postgres dropdb --if-exists tenark
-	sudo -u postgres dropuser --if-exists tenark
-	sudo -u postgres createuser --superuser tenark
+	sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"
