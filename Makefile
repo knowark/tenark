@@ -22,12 +22,12 @@ version:
 
 devdeploy:
 	# Run as root in the development server
-	apt install -y postgresql
-	apt install -y python3-pip
-	apt install -y postgresql-server-dev-all
-	python3 -m pip install mypy pytest pytest-cov psycopg2
-	id -u tenark &>/dev/null || adduser --system --home /opt/tenark \
-	--shell /bin/bash tenark
+	sudo apt install -y postgresql
+	sudo apt install -y python3-pip
+	sudo apt install -y postgresql-server-dev-all
+	sudo python3 -m pip install mypy pytest pytest-cov psycopg2
+	sudo id -u tenark &>/dev/null || sudo adduser --system \
+	--home /opt/tenark --shell /bin/bash tenark
 	sudo -u postgres dropdb --if-exists tenark
 	sudo -u postgres dropuser --if-exists tenark
 	sudo -u postgres createuser --superuser tenark
