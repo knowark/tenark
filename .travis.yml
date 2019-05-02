@@ -5,7 +5,7 @@ addons:
 python:
   - "3.6"
 before_install:
-  - sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"
+  - sudo -Hiu postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"
   - pip install poetry
 install:
   - poetry install
