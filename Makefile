@@ -22,6 +22,7 @@ version:
 
 devdeploy:
 	# Run as root in the development server
+	sudo apt update
 	sudo apt install -y postgresql
 	sudo apt install -y python3-pip
 	sudo apt install -y postgresql-server-dev-all
@@ -31,4 +32,3 @@ devdeploy:
 	sudo -u postgres dropdb --if-exists tenark
 	sudo -u postgres dropuser --if-exists tenark
 	sudo -u postgres createuser --superuser tenark
-	# sudo -u postgres createdb -O tenark tenark
