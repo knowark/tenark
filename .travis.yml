@@ -11,7 +11,6 @@ install:
   - poetry install
 script:
   - mypy tenark
-  - "sudo -u postgres pytest --cov-report term-missing
-    --cov-branch --cov tenark tests"
+  - pytest --cov-report term-missing --cov-branch --cov tenark tests
 after_success:
   - codecov
