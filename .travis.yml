@@ -3,6 +3,7 @@ cache: pip
 python:
   - "3.6"
 before_install:
+  - apt install make
   - pip install poetry
   - make devdeploy
 install:
