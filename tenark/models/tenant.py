@@ -16,7 +16,7 @@ class Tenant:
         self.slug = self._normalize_slug(attributes.get('slug', self.name))
         self.attributes = attributes.get('attributes', {})
         self.data: Mapping[str, str] = attributes.get('data', {
-            'memory': self.slug
+            'memory': ""
         })
 
     def location(self, type: str = 'memory') -> str:

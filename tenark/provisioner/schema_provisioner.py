@@ -1,3 +1,4 @@
+from typing import Dict
 from subprocess import run, PIPE
 from uuid import uuid4
 from ..common import TenantProvisionError
@@ -12,12 +13,10 @@ class SchemaProvisioner(Provisioner):
         self.template = template
 
     @property
-    def kind(self) -> str:
-        return "schema"
-
-    @property
-    def location(self) -> str:
-        return self.uri
+    def location(self) -> Dict[str, str]:
+        return {
+            "schema": self.uri
+        }
 
     def provision_tenant(self, tenant: Tenant) -> None:
         command = (

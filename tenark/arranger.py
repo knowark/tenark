@@ -21,5 +21,6 @@ class Arranger:
             raise TenantCreationError(
                 f'A tenant with slug "{tenant.slug}" already exists.')
 
+        tenant.data = tenant_dict.get('data', self.provisioner.location)
         tenant = self.cataloguer.add_tenant(tenant)
         self.provisioner.provision_tenant(tenant)

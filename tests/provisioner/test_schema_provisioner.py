@@ -44,8 +44,9 @@ def test_schema_provisioner_setup(provisioner):
 
 
 def test_schema_provisioner_properties(provisioner):
-    assert provisioner.kind == 'schema'
-    assert provisioner.location == provisioner.uri
+    assert provisioner.location == {
+        'schema': provisioner.uri
+    }
 
 
 def test_schema_provisioner_provision_tenant(provisioner):

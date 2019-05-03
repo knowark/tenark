@@ -1,3 +1,4 @@
+from typing import Dict
 from pathlib import Path
 from shutil import copytree
 from ..common import TenantProvisionError
@@ -12,12 +13,10 @@ class DirectoryProvisioner(Provisioner):
         self.data = data
 
     @property
-    def kind(self) -> str:
-        return "directory"
-
-    @property
-    def location(self) -> str:
-        return self.data
+    def location(self) -> Dict[str, str]:
+        return {
+            "directory": self.data
+        }
 
     def provision_tenant(self, tenant: Tenant) -> None:
         tenant_directory = str(Path(self.data) / tenant.slug)

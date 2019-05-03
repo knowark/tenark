@@ -1,3 +1,4 @@
+from typing import Dict
 from abc import ABC, abstractmethod
 from ..models import Tenant
 
@@ -7,12 +8,7 @@ class Provisioner(ABC):
 
     @property
     @abstractmethod
-    def kind(self) -> str:
-        "Show provisioner data kind."
-
-    @property
-    @abstractmethod
-    def location(self) -> str:
+    def location(self) -> Dict[str, str]:
         "Show provisioner data location."
 
     @abstractmethod

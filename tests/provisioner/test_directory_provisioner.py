@@ -46,8 +46,9 @@ def test_directory_provisioner_setup(provisioner):
 
 
 def test_directory_provisioner_properties(provisioner):
-    assert provisioner.kind == 'directory'
-    assert provisioner.location == provisioner.data
+    assert provisioner.location == {
+        "directory": provisioner.data
+    }
 
 
 def test_directory_provisioner_provision_tenant(provisioner):

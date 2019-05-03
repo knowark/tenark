@@ -14,8 +14,9 @@ def test_memory_provisioner_setup(provisioner):
 
 
 def test_memory_provisioner_properties(provisioner):
-    assert provisioner.kind == 'memory'
-    assert provisioner.location == ''
+    assert provisioner.location == {
+        "memory": ""
+    }
 
 
 def test_memory_provisioner_provision_tenant(provisioner):
