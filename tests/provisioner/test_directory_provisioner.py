@@ -45,6 +45,11 @@ def test_directory_provisioner_setup(provisioner):
     assert isinstance(provisioner.data, str)
 
 
+def test_directory_provisioner_properties(provisioner):
+    assert provisioner.kind == 'directory'
+    assert provisioner.location == provisioner.data
+
+
 def test_directory_provisioner_provision_tenant(provisioner):
     tenant = Tenant(name="Servagro")
     provisioner.provision_tenant(tenant)

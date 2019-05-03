@@ -11,6 +11,14 @@ class SchemaProvisioner(Provisioner):
         self.uri = uri
         self.template = template
 
+    @property
+    def kind(self) -> str:
+        return "schema"
+
+    @property
+    def location(self) -> str:
+        return self.uri
+
     def provision_tenant(self, tenant: Tenant) -> None:
         command = (
             f"pg_dump {self.uri} --schema={self.template} | "

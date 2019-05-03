@@ -13,6 +13,11 @@ def test_memory_provisioner_setup(provisioner):
     assert provisioner.pool == {}
 
 
+def test_memory_provisioner_properties(provisioner):
+    assert provisioner.kind == 'memory'
+    assert provisioner.location == ''
+
+
 def test_memory_provisioner_provision_tenant(provisioner):
     tenant = Tenant(name="Servagro")
     provisioner.provision_tenant(tenant)

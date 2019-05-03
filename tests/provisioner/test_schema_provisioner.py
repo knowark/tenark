@@ -1,7 +1,10 @@
-from pytest import fixture
+from pytest import fixture, mark
 from psycopg2 import connect
 from tenark.models import Tenant
 from tenark.provisioner import SchemaProvisioner
+
+
+pytestmark = mark.sql
 
 
 @fixture(scope="session")
@@ -38,6 +41,11 @@ def provisioner(template_setup) -> SchemaProvisioner:
 def test_schema_provisioner_setup(provisioner):
     assert 'tenark' in provisioner.uri
     assert provisioner.template == '__template__'
+
+
+def test_schema_provisioner_properties(provisioner):
+    assert provisioner.kind == 'schema'
+    assert provisioner.location == provisioner.uri
 
 
 def test_schema_provisioner_provision_tenant(provisioner):

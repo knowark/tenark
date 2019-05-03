@@ -15,6 +15,12 @@ coverage:
 	export COVERAGE_FILE=$(COVFILE); pytest -x --cov=tenark tests/ \
 	--cov-report term-missing -s -o cache_dir=/tmp/.pytest_cache
 
+coverage-offline: 
+	mypy tenark
+	export COVERAGE_FILE=$(COVFILE); pytest -x -m "not sql" --cov=tenark \
+	tests/ --cov-report term-missing -s -o cache_dir=/tmp/.pytest_cache
+
+
 PART ?= patch
 
 version:
