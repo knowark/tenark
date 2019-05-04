@@ -20,7 +20,7 @@ class SchemaProvisioner(Provisioner):
 
     def provision_tenant(self, tenant: Tenant) -> None:
         command = (
-            f"set -o pipefail; "
+            f"set -euxo pipefail; "
             f"pg_dump {self.uri} --schema={self.template} | "
             f"sed 's/{self.template}/{tenant.slug}/g' | "
             f"psql {self.uri}")
