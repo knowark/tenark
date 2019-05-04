@@ -23,4 +23,4 @@ class SchemaProvisioner(Provisioner):
             f"pg_dump {self.uri} --schema={self.template} | "
             f"sed 's/{self.template}/{tenant.slug}/g' | "
             f"psql {self.uri}")
-        run(command, shell=True, check=True)
+        run(command, shell=True, check=True, stdout=PIPE, stderr=PIPE)

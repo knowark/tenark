@@ -1,5 +1,6 @@
 from typing import Dict, Any, Optional
 from .common import QueryParser
+from .identifier import Identifier, UuidIdentifier
 from .cataloguer import (
     Cataloguer, MemoryCataloguer, JsonCataloguer)
 from .provisioner import (
@@ -7,6 +8,11 @@ from .provisioner import (
     DirectoryProvisioner, SchemaProvisioner)
 from .provider import Provider
 from .arranger import Arranger
+
+
+def resolve_identifier(options: Dict[str, Any]) -> Identifier:
+    identifier = UuidIdentifier()
+    return identifier
 
 
 def resolve_cataloguer(options: Dict[str, Any]) -> Cataloguer:
@@ -38,9 +44,10 @@ def resolve_provisioner(options: Dict[str, Any]) -> Provisioner:
 
 
 def resolve_arranger(options: Dict[str, Any]) -> Arranger:
+    identifier = options.get('identifier', resolve_identifier(options))
     cataloguer = options.get('cataloguer', resolve_cataloguer(options))
     provisioner = options.get('provisioner', resolve_provisioner(options))
-    arranger = Arranger(cataloguer, provisioner)
+    arranger = Arranger(cataloguer, provisioner, identifier)
     return arranger
 
 
