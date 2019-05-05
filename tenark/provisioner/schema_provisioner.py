@@ -19,9 +19,10 @@ class SchemaProvisioner(Provisioner):
         }
 
     def provision_tenant(self, tenant: Tenant) -> None:
-        command = (
-            f"set -euxo pipefail; "
+        query = (
             f"pg_dump {self.uri} --schema={self.template} | "
             f"sed 's/{self.template}/{tenant.slug}/g' | "
-            f"psql {self.uri}")
+            f"psql {self.uri}"
+        )
+        command = f'/bin/bash -euxo pipefail -c "{query}"'
         run(command, shell=True, check=True, stdout=PIPE, stderr=PIPE)
