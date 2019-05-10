@@ -27,7 +27,7 @@ class JsonCataloguer(Cataloguer):
                 json.dump(self.catalog_schema, f, indent=2)
             return
 
-        with catalog_file.open('r+') as f:
+        with catalog_file.open('w+') as f:
             try:
                 data = json.load(f)
                 if self.collection in data:

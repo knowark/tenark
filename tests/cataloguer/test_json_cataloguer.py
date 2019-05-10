@@ -30,11 +30,6 @@ def test_json_cataloguer_add_tenant(cataloguer):
         assert tenant.id in tenants
 
 
-# def test_json_cataloguer_add_tenant_no_setup(cataloguer):
-#     tenant = Tenant(name='Microsoft')
-#     with raises(TenantCatalogError):
-#         cataloguer.add_tenant(tenant)
-
 def test_json_cataloguer_file_preexisting_empty_catalog(tmp_path):
     path = tmp_path / 'empty_tenants.json'
     with path.open('w') as f:
@@ -54,6 +49,19 @@ def test_json_cataloguer_file_preexisting_correct_catalog(tmp_path):
         json.dump({
             "tenants": {}
         }, f, indent=2)
+
+    parser = QueryParser()
+    cataloguer = JsonCataloguer(str(path), parser)
+
+    with path.open() as f:
+        data = json.load(f)
+        assert cataloguer.collection in data
+
+
+def test_json_cataloguer_file_incorrect_json_catalog(tmp_path):
+    path = tmp_path / 'incorrect_tenants.json'
+    with path.open('w') as f:
+        f.write("{}")
 
     parser = QueryParser()
     cataloguer = JsonCataloguer(str(path), parser)
