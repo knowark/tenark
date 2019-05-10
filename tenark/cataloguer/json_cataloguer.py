@@ -27,7 +27,7 @@ class JsonCataloguer(Cataloguer):
                 json.dump(self.catalog_schema, f, indent=2)
             return
 
-        with catalog_file.open('w+') as f:
+        with catalog_file.open('r') as f:
             try:
                 data = json.load(f)
                 if self.collection in data:
@@ -35,6 +35,7 @@ class JsonCataloguer(Cataloguer):
             except json.JSONDecodeError as e:
                 pass
 
+        with catalog_file.open('w') as f:
             json.dump(self.catalog_schema, f, indent=2)
 
     def add_tenant(self, tenant: Tenant) -> Tenant:
