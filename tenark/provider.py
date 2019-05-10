@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import List, Dict, Any
 from .common import QueryDomain, TenantRetrievalError
 from .models import Tenant
 from .cataloguer import Cataloguer
@@ -12,6 +12,11 @@ class Provider:
     def get_tenant(self, tenant_id: str) -> Dict[str, Any]:
         tenant = self.cataloguer.get_tenant(tenant_id)
         return vars(tenant)
+
+    def search_tenants(self, domain: QueryDomain) -> List[Dict[str, Any]]:
+        return [vars(tenant) for tenant in sorted(
+            self.cataloguer.search_tenants(domain),
+            key=lambda x: x.name)]
 
     def resolve_tenant(self, name: str) -> Dict[str, Any]:
         domain: QueryDomain = ['|', ('slug', '=', name),

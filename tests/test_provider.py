@@ -50,3 +50,16 @@ def test_provider_resolve_tenant_not_found(
     }
     with raises(TenantRetrievalError):
         provider.resolve_tenant('yahoo')
+
+
+def test_provider_search_tenants(provider):
+    provider.cataloguer.catalog = {
+        '001': Tenant(name='Amazon'),
+        '002': Tenant(name='Google'),
+        '003': Tenant(name='Microsoft')
+    }
+    domain = []
+    tenants = provider.search_tenants([])
+    assert len(tenants) == 3
+    for tenant in tenants:
+        assert isinstance(tenant, dict)
