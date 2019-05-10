@@ -5,14 +5,16 @@ from tenark.arranger import Arranger
 from tenark.cataloguer import MemoryCataloguer
 from tenark.provisioner import MemoryProvisioner
 from tenark.common import TenantCreationError, QueryParser
+from tenark.identifier import UuidIdentifier
 
 
 @fixture
 def arranger() -> Arranger:
     parser = QueryParser()
+    identifier = UuidIdentifier()
     cataloguer = MemoryCataloguer(parser)
     provisioner = MemoryProvisioner()
-    return Arranger(cataloguer, provisioner)
+    return Arranger(cataloguer, provisioner, identifier)
 
 
 def test_arranger_creation(

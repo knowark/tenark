@@ -1,4 +1,3 @@
-from uuid import uuid4
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any, Optional
 from ..common import QueryParser, QueryDomain, TenantRetrievalError
@@ -13,7 +12,6 @@ class MemoryCataloguer(Cataloguer):
         self.catalog: Dict[str, Tenant] = {}
 
     def add_tenant(self, tenant: Tenant) -> Tenant:
-        tenant.id = tenant.id or str(uuid4())
         self.catalog[tenant.id] = tenant
         return tenant
 

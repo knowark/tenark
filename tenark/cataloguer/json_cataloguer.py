@@ -1,6 +1,5 @@
 import json
 from pathlib import Path
-from uuid import uuid4
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any, Optional
 from ..common import (
@@ -47,8 +46,6 @@ class JsonCataloguer(Cataloguer):
                 raise TenantCatalogError(
                     f"The tenant catalog file <${self.path}> "
                     "is not valid json.")
-
-        tenant.id = tenant.id or str(uuid4())
 
         data[self.collection].update({tenant.id: vars(tenant)})
         with path.open('w') as f:
