@@ -16,8 +16,8 @@ class Arranger:
 
     def create_tenant(self, tenant_dict: Dict[str, Any]) -> None:
         tenant = Tenant(**tenant_dict)
-        domain: QueryDomain = ['|', ('slug', '=', tenant.slug),
-                               ('name', '=', tenant.name)]
+        domain: QueryDomain = [
+            '|', ('slug', '=', tenant.slug), ('name', '=', tenant.name)]
         duplicates = self.cataloguer.search_tenants(domain)
 
         if duplicates:
