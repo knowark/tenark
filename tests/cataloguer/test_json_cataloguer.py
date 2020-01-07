@@ -71,15 +71,6 @@ def test_json_cataloguer_file_incorrect_json_catalog(tmp_path):
         assert cataloguer.collection in data
 
 
-def test_json_cataloguer_add_tenant_no_valid_json(cataloguer):
-    tenant = Tenant(name='Microsoft')
-    with Path(cataloguer.path).open('w') as f:
-        f.write('{')
-
-    with raises(TenantCatalogError):
-        cataloguer.add_tenant(tenant)
-
-
 def test_json_cataloguer_search_tenants_empty(cataloguer):
     tenant = Tenant(name='Microsoft')
     tenants = cataloguer.search_tenants([])
@@ -98,6 +89,7 @@ def test_json_cataloguer_search_tenants(
             }
         }, f, indent=2)
 
+    cataloguer._load()
     tenants = cataloguer.search_tenants(
         [('slug', '=', 'amazon')])
     assert len(tenants) == 1
@@ -115,6 +107,7 @@ def test_json_cataloguer_get_tenant(
             }
         }, f, indent=2)
 
+    cataloguer._load()
     tenant = cataloguer.get_tenant('002')
     assert tenant.name == 'Google'
 
@@ -130,11 +123,6 @@ def test_json_cataloguer_get_tenant_not_found(
             }
         }, f, indent=2)
 
+    cataloguer._load()
     with raises(TenantRetrievalError):
         cataloguer.get_tenant('004')
-
-
-# def test_json_cataloguer_get_tenant_not_setup(
-#         cataloguer: JsonCataloguer):
-#     with raises(ValueError):
-#         cataloguer.get_tenant('001')
