@@ -57,7 +57,9 @@ def test_resolver_resolve_provisioner_directory():
     options['provision_template'] = '/home/user/templates/__template__'
     with raises(KeyError):
         cataloguer = resolver.resolve_provisioner(options)
-    options['data_directory'] = '/home/user/data'
+    options['provision_directory_zones'] = {
+        'default':  '/home/user/data'
+    }
     provisioner = resolver.resolve_provisioner(options)
 
     assert isinstance(provisioner, DirectoryProvisioner)

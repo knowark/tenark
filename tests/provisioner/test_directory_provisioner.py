@@ -37,25 +37,22 @@ def template_setup(tmp_path):
 @fixture
 def provisioner(template_setup) -> DirectoryProvisioner:
     tenant_template, data = template_setup
-    return DirectoryProvisioner(str(tenant_template), str(data))
+    zones = {
+        'default': str(data)
+    }
+    return DirectoryProvisioner(zones, str(tenant_template))
 
 
 def test_directory_provisioner_setup(provisioner):
     assert isinstance(provisioner.template, str)
-    assert isinstance(provisioner.data, str)
-
-
-def test_directory_provisioner_properties(provisioner):
-    assert provisioner.location == {
-        "directory": provisioner.data
-    }
+    assert isinstance(provisioner.zones['default'], str)
 
 
 def test_directory_provisioner_provision_tenant(provisioner):
     tenant = Tenant(id='001', name="Servagro")
     provisioner.provision_tenant(tenant)
 
-    data = Path(provisioner.data)
+    data = Path(provisioner.zones['default'])
     subdirectories = [
         directory for directory in data.iterdir()
         if directory.is_dir()]

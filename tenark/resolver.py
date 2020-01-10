@@ -34,8 +34,8 @@ def resolve_provisioner(options: Dict[str, Any]) -> Provisioner:
     provisioner: Optional[Provisioner] = None
     if options.get('provisioner_kind') == 'directory':
         template = options['provision_template']
-        data = options['data_directory']
-        provisioner = DirectoryProvisioner(template, data)
+        zones = options['provision_directory_zones']
+        provisioner = DirectoryProvisioner(zones, template)
     elif options.get('provisioner_kind') == 'schema':
         zones = options['provision_schema_zones']
         provisioner = SchemaProvisioner(zones)
