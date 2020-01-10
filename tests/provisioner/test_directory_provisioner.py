@@ -52,7 +52,7 @@ def test_directory_provisioner_properties(provisioner):
 
 
 def test_directory_provisioner_provision_tenant(provisioner):
-    tenant = Tenant(name="Servagro")
+    tenant = Tenant(id='001', name="Servagro")
     provisioner.provision_tenant(tenant)
 
     data = Path(provisioner.data)

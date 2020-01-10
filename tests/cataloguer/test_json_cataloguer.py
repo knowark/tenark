@@ -21,7 +21,7 @@ def test_json_cataloguer_setup_catalog(cataloguer):
 
 
 def test_json_cataloguer_add_tenant(cataloguer):
-    tenant = Tenant(name='Microsoft')
+    tenant = Tenant(id='001', name='Microsoft')
     tenant = cataloguer.add_tenant(tenant)
 
     with Path(cataloguer.path).open() as f:
@@ -72,20 +72,20 @@ def test_json_cataloguer_file_incorrect_json_catalog(tmp_path):
 
 
 def test_json_cataloguer_search_tenants_empty(cataloguer):
-    tenant = Tenant(name='Microsoft')
+    tenant = Tenant(id='001', name='Microsoft')
     tenants = cataloguer.search_tenants([])
     assert len(tenants) == 0
 
 
 def test_json_cataloguer_search_tenants(
         cataloguer: JsonCataloguer):
-    tenant = Tenant(name='Microsoft')
+    tenant = Tenant(id='003', name='Microsoft')
     with Path(cataloguer.path).open('w') as f:
         json.dump({
             'tenants': {
-                '001': vars(Tenant(name='Amazon')),
-                '002': vars(Tenant(name='Google')),
-                '003': vars(Tenant(name='Microsoft'))
+                '001': vars(Tenant(id='001', name='Amazon')),
+                '002': vars(Tenant(id='002', name='Google')),
+                '003': vars(Tenant(id='003', name='Microsoft'))
             }
         }, f, indent=2)
 
@@ -101,9 +101,9 @@ def test_json_cataloguer_get_tenant(
     with Path(cataloguer.path).open('w') as f:
         json.dump({
             'tenants': {
-                '001': vars(Tenant(name='Amazon')),
-                '002': vars(Tenant(name='Google')),
-                '003': vars(Tenant(name='Microsoft'))
+                '001': vars(Tenant(id='001', name='Amazon')),
+                '002': vars(Tenant(id='002', name='Google')),
+                '003': vars(Tenant(id='003', name='Microsoft'))
             }
         }, f, indent=2)
 
@@ -117,9 +117,9 @@ def test_json_cataloguer_get_tenant_not_found(
     with Path(cataloguer.path).open('w') as f:
         json.dump({
             'tenants': {
-                '001': vars(Tenant(name='Amazon')),
-                '002': vars(Tenant(name='Google')),
-                '003': vars(Tenant(name='Microsoft'))
+                '001': vars(Tenant(id='001', name='Amazon')),
+                '002': vars(Tenant(id='002', name='Google')),
+                '003': vars(Tenant(id='003', name='Microsoft'))
             }
         }, f, indent=2)
 

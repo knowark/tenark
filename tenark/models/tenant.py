@@ -6,15 +6,15 @@ from ..common import TenantLocationError, TenantCreationError
 
 class Tenant:
     def __init__(self, **attributes):
-        now = int(time.time())
-        self.id = attributes.get('id', '')
-        self.created_at = now
-        self.updated_at = now
+        self.id = attributes['id']
+        self.created_at = attributes.get('created_at', int(time.time()))
+        self.updated_at = attributes.get('updated_at', self.created_at)
         self.name = attributes['name']
         self.email = attributes.get('email', '')
         self.active = attributes.get('active', True)
         self.slug = self._normalize_slug(attributes.get('slug', self.name))
         self.attributes = attributes.get('attributes', {})
+        self.zone = attributes.get('zone', '')
         self.data: Mapping[str, str] = attributes.get('data', {
             'memory': ""
         })

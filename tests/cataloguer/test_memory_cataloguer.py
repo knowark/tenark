@@ -15,24 +15,24 @@ def test_memory_cataloguer_setup_catalog(cataloguer):
 
 
 def test_memory_cataloguer_add_tenant(cataloguer):
-    tenant = Tenant(name='Microsoft')
+    tenant = Tenant(id='001', name='Microsoft')
     tenant = cataloguer.add_tenant(tenant)
     assert len(cataloguer.catalog) == 1
 
 
 def test_memory_cataloguer_search_tenants_empty(cataloguer):
-    tenant = Tenant(name='Microsoft')
+    tenant = Tenant(id='001', name='Microsoft')
     tenants = cataloguer.search_tenants([])
     assert len(tenants) == 0
 
 
 def test_memory_cataloguer_search_tenants(
         cataloguer: MemoryCataloguer):
-    tenant = Tenant(name='Microsoft')
+    tenant = Tenant(id='003', name='Microsoft')
     cataloguer.catalog = {
-        '001': Tenant(name='Amazon'),
-        '002': Tenant(name='Google'),
-        '003': Tenant(name='Microsoft'),
+        '001': Tenant(id='001', name='Amazon'),
+        '002': Tenant(id='002', name='Google'),
+        '003': Tenant(id='003', name='Microsoft'),
     }
     tenants = cataloguer.search_tenants(
         [('slug', '=', 'amazon')])
@@ -42,9 +42,9 @@ def test_memory_cataloguer_search_tenants(
 def test_memory_cataloguer_get_tenant(
         cataloguer: MemoryCataloguer):
     cataloguer.catalog = {
-        '001': Tenant(name='Amazon'),
-        '002': Tenant(name='Google'),
-        '003': Tenant(name='Microsoft'),
+        '001': Tenant(id='001', name='Amazon'),
+        '002': Tenant(id='002', name='Google'),
+        '003': Tenant(id='003', name='Microsoft'),
     }
     tenant = cataloguer.get_tenant('002')
     assert tenant.name == 'Google'
@@ -53,9 +53,9 @@ def test_memory_cataloguer_get_tenant(
 def test_memory_cataloguer_get_tenant_not_found(
         cataloguer: MemoryCataloguer):
     cataloguer.catalog = {
-        '001': Tenant(name='Amazon'),
-        '002': Tenant(name='Google'),
-        '003': Tenant(name='Microsoft'),
+        '001': Tenant(id='001', name='Amazon'),
+        '002': Tenant(id='002', name='Google'),
+        '003': Tenant(id='003', name='Microsoft'),
     }
     with raises(TenantRetrievalError):
         cataloguer.get_tenant('004')

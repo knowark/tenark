@@ -20,9 +20,9 @@ def test_provider_instantiation(provider):
 def test_provider_get_tenant(provider):
     tenant_id = '001'
     provider.cataloguer.catalog = {
-        '001': Tenant(name='Amazon'),
-        '002': Tenant(name='Google'),
-        '003': Tenant(name='Microsoft')
+        '001': Tenant(id='001', name='Amazon'),
+        '002': Tenant(id='002', name='Google'),
+        '003': Tenant(id='003', name='Microsoft')
     }
     tenant = provider.get_tenant(tenant_id)
     assert tenant['slug'] == 'amazon'
@@ -30,9 +30,9 @@ def test_provider_get_tenant(provider):
 
 def test_provider_resolve_tenant(provider):
     provider.cataloguer.catalog = {
-        '001': Tenant(name='Amazon'),
-        '002': Tenant(name='Google'),
-        '003': Tenant(name='Microsoft')
+        '001': Tenant(id='001', name='Amazon'),
+        '002': Tenant(id='002', name='Google'),
+        '003': Tenant(id='003', name='Microsoft')
     }
     tenant = provider.resolve_tenant('microsoft')
     assert tenant['slug'] == 'microsoft'
@@ -44,9 +44,9 @@ def test_provider_resolve_tenant(provider):
 def test_provider_resolve_tenant_not_found(
         provider):
     provider.cataloguer.catalog = {
-        '001': Tenant(name='Amazon'),
-        '002': Tenant(name='Google'),
-        '003': Tenant(name='Microsoft')
+        '001': Tenant(id='001', name='Amazon'),
+        '002': Tenant(id='001', name='Google'),
+        '003': Tenant(id='001', name='Microsoft')
     }
     with raises(TenantRetrievalError):
         provider.resolve_tenant('yahoo')
@@ -54,9 +54,9 @@ def test_provider_resolve_tenant_not_found(
 
 def test_provider_search_tenants(provider):
     provider.cataloguer.catalog = {
-        '001': Tenant(name='Amazon'),
-        '002': Tenant(name='Google'),
-        '003': Tenant(name='Microsoft')
+        '001': Tenant(id='001', name='Amazon'),
+        '002': Tenant(id='001', name='Google'),
+        '003': Tenant(id='001', name='Microsoft')
     }
     domain = []
     tenants = provider.search_tenants([])

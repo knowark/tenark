@@ -5,7 +5,7 @@ from tenark.common import TenantCreationError, TenantLocationError
 
 @fixture
 def tenant() -> Tenant:
-    return Tenant(name="Amazon")
+    return Tenant(id='001', name="Amazon")
 
 
 def test_tenant_creation(tenant: Tenant) -> None:
@@ -13,11 +13,12 @@ def test_tenant_creation(tenant: Tenant) -> None:
 
 
 def test_tenant_default_attributes(tenant: Tenant) -> None:
-    assert tenant.id == ""
+    assert tenant.id == "001"
     assert tenant.created_at > 0
     assert tenant.updated_at > 0
     assert tenant.name == "Amazon"
     assert tenant.slug == 'amazon'
+    assert tenant.zone == ''
 
 
 def test_tenant_attributes_from_dict() -> None:

@@ -26,7 +26,7 @@ def test_arranger_create_tenant(
         arranger: Arranger) -> None:
     provisioner = cast(MemoryProvisioner,
                        arranger.provisioner)
-    tenant_dict = {"name": "Google"}
+    tenant_dict = {"id": "001", "name": "Google"}
     arranger.create_tenant(tenant_dict)
     assert len(provisioner.pool) == 1
 
@@ -38,11 +38,11 @@ def test_arranger_create_tenant_duplicate(
     cataloguer = cast(MemoryCataloguer,
                       arranger.cataloguer)
     cataloguer.catalog = {
-        '001': Tenant(name='Amazon'),
-        '002': Tenant(name='Google'),
-        '003': Tenant(name='Microsoft'),
+        '001': Tenant(id='001', name='Amazon'),
+        '002': Tenant(id='002', name='Google'),
+        '003': Tenant(id='003', name='Microsoft'),
     }
 
-    tenant_dict = {"name": "Google"}
+    tenant_dict = {"id": "002", "name": "Google"}
     with raises(TenantCreationError):
         arranger.create_tenant(tenant_dict)

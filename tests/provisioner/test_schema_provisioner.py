@@ -50,7 +50,7 @@ def test_schema_provisioner_properties(provisioner):
 
 
 def test_schema_provisioner_provision_tenant(provisioner):
-    tenant = Tenant(name="Knowark")
+    tenant = Tenant(id='001', name="Knowark")
     provisioner.provision_tenant(tenant)
 
     with connect(provisioner.dsn) as connection:
