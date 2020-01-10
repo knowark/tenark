@@ -10,9 +10,9 @@ from .cataloguer import Cataloguer
 
 class JsonCataloguer(Cataloguer):
 
-    def __init__(self, path: str, parser: QueryParser) -> None:
+    def __init__(self, path: str, parser: QueryParser = None) -> None:
         self.path = path
-        self.parser = parser
+        self.parser = parser or QueryParser()
         self.catalog: Dict[str, Tenant] = {}
         self.collection = 'tenants'
         self.catalog_schema: Dict = {

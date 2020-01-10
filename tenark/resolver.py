@@ -1,4 +1,4 @@
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Tuple
 from .common import QueryParser
 from .identifier import Identifier, UuidIdentifier
 from .cataloguer import (
@@ -17,22 +17,20 @@ def resolve_identifier(options: Dict[str, Any]) -> Identifier:
 
 
 def resolve_cataloguer(options: Dict[str, Any]) -> Cataloguer:
-    parser = QueryParser()
     cataloguer: Optional[Cataloguer] = None
     if options.get('cataloguer_kind') == 'json':
         path = options['catalog_path']
-        cataloguer = JsonCataloguer(path, parser)
+        cataloguer = JsonCataloguer(path)
     elif options.get('cataloguer_kind') == 'schema':
         dsn = options['catalog_dsn']
         cataloguer = SchemaCataloguer(dsn)
     else:
-        cataloguer = MemoryCataloguer(parser)
+        cataloguer = MemoryCataloguer()
 
     return cataloguer
 
 
 def resolve_provisioner(options: Dict[str, Any]) -> Provisioner:
-    parser = QueryParser()
     provisioner: Optional[Provisioner] = None
     if options.get('provisioner_kind') == 'directory':
         template = options['provision_template']
@@ -48,14 +46,22 @@ def resolve_provisioner(options: Dict[str, Any]) -> Provisioner:
 
 
 def resolve_arranger(options: Dict[str, Any]) -> Arranger:
-    identifier = options.get('identifier', resolve_identifier(options))
-    cataloguer = options.get('cataloguer', resolve_cataloguer(options))
-    provisioner = options.get('provisioner', resolve_provisioner(options))
-    arranger = Arranger(cataloguer, provisioner, identifier)
-    return arranger
+    identifier = options.setdefault(
+        'identifier', resolve_identifier(options))
+    cataloguer = options.setdefault(
+        'cataloguer', resolve_cataloguer(options))
+    provisioner = options.setdefault(
+        'provisioner', resolve_provisioner(options))
+    return Arranger(cataloguer, provisioner, identifier)
 
 
 def resolve_provider(options: Dict[str, Any]) -> Provider:
-    cataloguer = options.get('cataloguer', resolve_cataloguer(options))
-    provider = Provider(cataloguer)
-    return provider
+    cataloguer = options.setdefault(
+        'cataloguer', resolve_cataloguer(options))
+    return Provider(cataloguer)
+
+
+def resolve_managers(options: Dict[str, Any]) -> Tuple[Arranger, Provider]:
+    arranger = resolve_arranger(options)
+    provider = resolve_provider(options)
+    return arranger, provider

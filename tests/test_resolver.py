@@ -90,3 +90,14 @@ def test_resolver_resolve_provider():
 
     assert isinstance(provider, Provider)
     assert isinstance(provider.cataloguer, MemoryCataloguer)
+
+
+def test_resolver_resolve_managers():
+    options = {}
+    arranger, provider = resolver.resolve_managers({})
+
+    assert isinstance(arranger, Arranger)
+    assert isinstance(provider, Provider)
+    assert isinstance(arranger.cataloguer, MemoryCataloguer)
+    assert isinstance(provider.cataloguer, MemoryCataloguer)
+    assert arranger.cataloguer is provider.cataloguer

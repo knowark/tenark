@@ -7,8 +7,8 @@ from .cataloguer import Cataloguer
 
 class MemoryCataloguer(Cataloguer):
 
-    def __init__(self, parser: QueryParser) -> None:
-        self.parser = parser
+    def __init__(self, parser: QueryParser = None) -> None:
+        self.parser = parser or QueryParser()
         self.catalog: Dict[str, Tenant] = {}
 
     def add_tenant(self, tenant: Tenant) -> Tenant:
