@@ -31,8 +31,6 @@ class SchemaCataloguer(Cataloguer):
                 cursor.execute(
                     f"CREATE UNIQUE INDEX IF NOT EXISTS pk_{self.table}_id ON "
                     f"{self.schema}.{self.table} ((data ->> 'id'));")
-                cursor.execute(
-                    f"REINDEX INDEX {self.schema}.pk_{self.table}_id;")
 
         self._load()
 
