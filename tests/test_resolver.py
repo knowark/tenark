@@ -1,5 +1,6 @@
 from pytest import raises
-from tenark.cataloguer import MemoryCataloguer, JsonCataloguer
+from tenark.cataloguer import (
+    MemoryCataloguer, JsonCataloguer, SchemaCataloguer)
 from tenark.provisioner import (
     MemoryProvisioner, DirectoryProvisioner, SchemaProvisioner)
 from tenark.provider import Provider
@@ -25,6 +26,19 @@ def test_resolver_resolve_cataloguer_json(monkeypatch):
     cataloguer = resolver.resolve_cataloguer(options)
 
     assert isinstance(cataloguer, JsonCataloguer)
+
+
+def test_resolver_resolve_cataloguer_schema(monkeypatch):
+    monkeypatch.setattr(SchemaCataloguer, '_setup', lambda self: None)
+    options = {
+        'cataloguer_kind': 'schema'
+    }
+    with raises(KeyError):
+        cataloguer = resolver.resolve_cataloguer(options)
+    options['catalog_dsn'] = 'postgresql://postgres:postgres@localhost/db'
+    cataloguer = resolver.resolve_cataloguer(options)
+
+    assert isinstance(cataloguer, SchemaCataloguer)
 
 
 def test_resolver_resolve_provisioner_no_options():

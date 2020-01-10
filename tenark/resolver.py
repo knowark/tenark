@@ -2,7 +2,8 @@ from typing import Dict, Any, Optional
 from .common import QueryParser
 from .identifier import Identifier, UuidIdentifier
 from .cataloguer import (
-    Cataloguer, MemoryCataloguer, JsonCataloguer)
+    Cataloguer, MemoryCataloguer, JsonCataloguer,
+    SchemaCataloguer)
 from .provisioner import (
     Provisioner, MemoryProvisioner,
     DirectoryProvisioner, SchemaProvisioner)
@@ -21,6 +22,9 @@ def resolve_cataloguer(options: Dict[str, Any]) -> Cataloguer:
     if options.get('cataloguer_kind') == 'json':
         path = options['catalog_path']
         cataloguer = JsonCataloguer(path, parser)
+    elif options.get('cataloguer_kind') == 'schema':
+        dsn = options['catalog_dsn']
+        cataloguer = SchemaCataloguer(dsn)
     else:
         cataloguer = MemoryCataloguer(parser)
 

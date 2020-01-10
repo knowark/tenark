@@ -1,6 +1,5 @@
 import json
 import psycopg2
-from pathlib import Path
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any, Optional
 from ..common import (
@@ -11,18 +10,14 @@ from .cataloguer import Cataloguer
 
 class SchemaCataloguer(Cataloguer):
 
-    def __init__(self, dsn: str, schema: str, table: str,
-                 parser: QueryParser) -> None:
-        self.path = ''
+    def __init__(self, dsn: str, schema: str ='public',
+                 table: str = '__tenants__',
+                 parser: QueryParser = None) -> None:
         self.dsn = dsn
         self.schema = schema
         self.table = table
-        self.parser = parser
+        self.parser = parser or QueryParser()
         self.catalog: Dict[str, Tenant] = {}
-        self.collection = 'tenants'
-        self.catalog_schema: Dict = {
-            self.collection: {}
-        }
         self._setup()
 
     def _setup(self) -> None:
