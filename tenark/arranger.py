@@ -15,6 +15,7 @@ class Arranger:
         self.identifier = identifier
 
     def create_tenant(self, tenant_dict: Dict[str, Any]) -> None:
+        tenant_dict.setdefault('id', self.identifier.generate_id())
         tenant = Tenant(**tenant_dict)
         domain: QueryDomain = [
             '|', ('slug', '=', tenant.slug), ('name', '=', tenant.name)]
@@ -24,7 +25,5 @@ class Arranger:
             raise TenantCreationError(
                 f'A tenant with slug "{tenant.slug}" already exists.')
 
-        tenant.id = tenant_dict.get('id', self.identifier.generate_id())
-        tenant.data = tenant_dict.get('data', self.provisioner.location)
         self.provisioner.provision_tenant(tenant)
         self.cataloguer.add_tenant(tenant)

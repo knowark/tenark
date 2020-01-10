@@ -69,7 +69,9 @@ def test_resolver_resolve_provisioner_schema():
     }
     with raises(KeyError):
         cataloguer = resolver.resolve_provisioner(options)
-    options['provision_dsn'] = 'postgresql://postgres:postgres@localhost/db'
+    options['provision_schema_zones'] = {
+        'default': 'postgresql://postgres:postgres@localhost/db'
+    }
     provisioner = resolver.resolve_provisioner(options)
 
     assert isinstance(provisioner, SchemaProvisioner)
