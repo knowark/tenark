@@ -34,18 +34,18 @@ def template_setup():
 @fixture
 def provisioner(template_setup) -> SchemaProvisioner:
     database = template_setup
-    uri = f"postgresql://postgres:postgres@localhost/{database}"
-    return SchemaProvisioner(uri=uri)
+    dsn = f"postgresql://postgres:postgres@localhost/{database}"
+    return SchemaProvisioner(dsn=dsn)
 
 
 def test_schema_provisioner_setup(provisioner):
-    assert 'tenark' in provisioner.uri
+    assert 'tenark' in provisioner.dsn
     assert provisioner.template == '__template__'
 
 
 def test_schema_provisioner_properties(provisioner):
     assert provisioner.location == {
-        'schema': provisioner.uri
+        'schema': provisioner.dsn
     }
 
 
@@ -53,7 +53,7 @@ def test_schema_provisioner_provision_tenant(provisioner):
     tenant = Tenant(name="Knowark")
     provisioner.provision_tenant(tenant)
 
-    with connect(provisioner.uri) as connection:
+    with connect(provisioner.dsn) as connection:
         with connection.cursor() as cursor:
             cursor.execute(
                 "SELECT EXISTS("

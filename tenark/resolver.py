@@ -37,8 +37,8 @@ def resolve_provisioner(options: Dict[str, Any]) -> Provisioner:
         data = options['data_directory']
         provisioner = DirectoryProvisioner(template, data)
     elif options.get('provisioner_kind') == 'schema':
-        uri = options['provision_uri']
-        provisioner = SchemaProvisioner(uri)
+        dsn = options['provision_dsn']
+        provisioner = SchemaProvisioner(dsn)
     else:
         provisioner = MemoryProvisioner()
 
