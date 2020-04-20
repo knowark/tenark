@@ -5,4 +5,4 @@ from .resolver import (
     resolve_provider, resolve_provisioner,
     resolve_identifier, resolve_managers)
 
-__version__ = '0.6.1'
+__version__ = '0.6.2'
