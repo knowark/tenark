@@ -3,6 +3,6 @@ from .arranger import Arranger
 from .resolver import (
     resolve_arranger, resolve_cataloguer,
     resolve_provider, resolve_provisioner,
-    resolve_identifier)
+    resolve_identifier, resolve_managers)
 
 __version__ = '0.6.1'
