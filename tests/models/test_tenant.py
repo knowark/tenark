@@ -55,14 +55,3 @@ def test_tenant_normalize_slug_invalid() -> None:
     unsupported_slug = " あ "
     with raises(TenantCreationError):
         resp = Tenant._normalize_slug(unsupported_slug)
-
-
-def test_tenant_location(tenant: Tenant) -> None:
-    location = tenant.location()
-
-    assert location == ''
-
-
-def test_tenant_location_type_not_found(tenant: Tenant) -> None:
-    with raises(TenantLocationError):
-        location = tenant.location('sql')

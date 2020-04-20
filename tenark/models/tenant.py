@@ -15,16 +15,6 @@ class Tenant:
         self.slug = self._normalize_slug(attributes.get('slug', self.name))
         self.attributes = attributes.get('attributes', {})
         self.zone = attributes.get('zone', '')
-        self.data: Mapping[str, str] = attributes.get('data', {
-            'memory': ""
-        })
-
-    def location(self, type: str = 'memory') -> str:
-        if type not in self.data:
-            raise TenantLocationError(
-                f"No location found for '{type}' type "
-                f"in tenant '{self.name}'.")
-        return self.data[type]
 
     @staticmethod
     def _normalize_slug(slug: str) -> str:
