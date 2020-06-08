@@ -1,4 +1,5 @@
 from pytest import raises
+from typing import Dict, Any
 from tenark.cataloguer import (
     MemoryCataloguer, JsonCataloguer, SchemaCataloguer)
 from tenark.provisioner import (
@@ -49,14 +50,14 @@ def test_resolver_resolve_provisioner_no_options():
 
 
 def test_resolver_resolve_provisioner_directory():
-    options = {
+    options: Dict[str, Any] = {
         'provisioner_kind': 'directory'
     }
     with raises(KeyError):
-        cataloguer = resolver.resolve_provisioner(options)
+        resolver.resolve_provisioner(options)
     options['provision_template'] = '/home/user/templates/__template__'
     with raises(KeyError):
-        cataloguer = resolver.resolve_provisioner(options)
+        resolver.resolve_provisioner(options)
     options['provision_directory_zones'] = {
         'default':  '/home/user/data'
     }
@@ -66,7 +67,7 @@ def test_resolver_resolve_provisioner_directory():
 
 
 def test_resolver_resolve_provisioner_schema():
-    options = {
+    options: Dict[str, Any] = {
         'provisioner_kind': 'schema'
     }
     with raises(KeyError):
