@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tenark"
-version = "0.6.3"
+version = "0.6.4"
 description = ""
 authors = ["Esteban Echeverry <eecheverry@nubark.com>"]
 
