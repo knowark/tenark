@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from pytest import fixture, raises
 from tenark.common import (
-    QueryParser, TenantCatalogError, TenantRetrievalError)
+    QueryParser, TenantRetrievalError)
 from tenark.models import Tenant
 from tenark.cataloguer import JsonCataloguer
 

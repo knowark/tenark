@@ -1,4 +1,3 @@
-from pytest import fixture, raises
 from tenark.identifier import UuidIdentifier
 
 

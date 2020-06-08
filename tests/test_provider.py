@@ -1,4 +1,3 @@
-from typing import Dict
 from pytest import fixture, raises
 from tenark.models import Tenant
 from tenark.common import QueryParser, TenantRetrievalError

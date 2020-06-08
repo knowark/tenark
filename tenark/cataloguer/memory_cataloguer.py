@@ -1,5 +1,4 @@
-from abc import ABC, abstractmethod
-from typing import List, Dict, Any, Optional
+from typing import List, Dict
 from ..common import QueryParser, QueryDomain, TenantRetrievalError
 from ..models import Tenant
 from .cataloguer import Cataloguer

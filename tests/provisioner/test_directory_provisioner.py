@@ -1,9 +1,8 @@
 import json
 from pathlib import Path
-from pytest import fixture, raises
+from pytest import fixture
 from tenark.models import Tenant
-from tenark.common import TenantProvisionError
-from tenark.provisioner import Provisioner, DirectoryProvisioner
+from tenark.provisioner import DirectoryProvisioner
 
 
 @fixture

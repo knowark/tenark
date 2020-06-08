@@ -1,7 +1,6 @@
 from typing import Dict
 from pathlib import Path
 from shutil import copytree
-from ..common import TenantProvisionError
 from ..models import Tenant
 from .provisioner import Provisioner
 

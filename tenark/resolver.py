@@ -1,5 +1,4 @@
 from typing import Dict, Any, Optional, Tuple
-from .common import QueryParser
 from .identifier import Identifier, UuidIdentifier
 from .cataloguer import (
     Cataloguer, MemoryCataloguer, JsonCataloguer,

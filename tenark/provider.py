@@ -1,6 +1,5 @@
 from typing import List, Dict, Any
 from .common import QueryDomain, TenantRetrievalError
-from .models import Tenant
 from .cataloguer import Cataloguer
 
 

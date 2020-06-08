@@ -1,7 +1,5 @@
 from typing import Dict
 from subprocess import run, PIPE
-from uuid import uuid4
-from ..common import TenantProvisionError
 from ..models import Tenant
 from .provisioner import Provisioner
 
