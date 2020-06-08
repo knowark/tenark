@@ -1,9 +1,8 @@
 import json
 import psycopg2
-from abc import ABC, abstractmethod
-from typing import List, Dict, Any, Optional
+from typing import List, Dict
 from ..common import (
-    QueryParser, QueryDomain, TenantCatalogError, TenantRetrievalError)
+    QueryParser, QueryDomain, TenantRetrievalError)
 from ..models import Tenant
 from .cataloguer import Cataloguer
 

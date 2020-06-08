@@ -50,10 +50,14 @@ class JsonCataloguer(Cataloguer):
         return False
 
     def add_tenant(self, tenant: Tenant) -> Tenant:
-        path = Path(self.path)
-        data = {'tenants': dict(self.catalog)}
+        data: Dict[str, Any] = {self.collection: {}}
+        catalog_file = Path(self.path)
+        with catalog_file.open('r') as f:
+            data = json.load(f)
+
         data[self.collection].update({tenant.id: vars(tenant)})
-        with path.open('w') as f:
+
+        with catalog_file.open('w') as f:
             json.dump(data, f, indent=2)
 
         self._load()

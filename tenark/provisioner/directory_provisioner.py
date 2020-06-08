@@ -15,5 +15,6 @@ class DirectoryProvisioner(Provisioner):
 
     def provision_tenant(self, tenant: Tenant) -> None:
         directory = self.zones.get(tenant.zone, self.default_directory)
-        tenant_directory = str(Path(directory) / tenant.slug)
-        copytree(self.template, tenant_directory)
+        tenant_directory = Path(directory) / tenant.slug
+        if not tenant_directory.exists():
+            copytree(self.template, str(tenant_directory))
