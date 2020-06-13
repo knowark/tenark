@@ -86,7 +86,7 @@ def test_resolver_resolve_provisioner_schema():
         'provisioner_kind': 'schema'
     }
     with raises(KeyError):
-        cataloguer = resolver.resolve_provisioner(options)
+        resolver.resolve_provisioner(options)
     options['provision_schema_zones'] = {
         'default': 'postgresql://postgres:postgres@localhost/db'
     }
@@ -105,7 +105,6 @@ def test_resolver_resolve_arranger():
 
 
 def test_resolver_resolve_provider():
-    options = {}
     provider = resolver.resolve_provider({})
 
     assert isinstance(provider, Provider)
@@ -113,7 +112,6 @@ def test_resolver_resolve_provider():
 
 
 def test_resolver_resolve_managers():
-    options = {}
     arranger, provider = resolver.resolve_managers({})
 
     assert isinstance(arranger, Arranger)
