@@ -12,8 +12,9 @@ COVFILE ?= .coverage
 
 coverage: 
 	mypy tenark
-	export COVERAGE_FILE=$(COVFILE); pytest -x --cov=tenark tests/ \
-	--cov-report term-missing -s -o cache_dir=/tmp/.pytest_cache
+	export COVERAGE_FILE=$(COVFILE); pytest -x --cov-branch \
+	--cov=tenark tests/ --cov-report term-missing -s -o \
+	cache_dir=/tmp/.pytest_cache -vv
 
 coverage-offline: 
 	mypy tenark

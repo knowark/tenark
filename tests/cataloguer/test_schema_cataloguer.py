@@ -1,5 +1,6 @@
 import json
-import psycopg2
+from types import MethodType
+from typing import Sequence, List, Dict, Any
 from pytest import fixture, raises
 from tenark.common import (
     QueryParser, TenantRetrievalError)
@@ -7,33 +8,57 @@ from tenark.models import Tenant
 from tenark.cataloguer import SchemaCataloguer
 
 
-@fixture(scope="session")
-def database():
-    database = "tenark_catalog"
-    postgres_dsn = f"dbname=postgres user=postgres password=postgres"
-    with psycopg2.connect(postgres_dsn) as connection:
-        connection.autocommit = True
-        with connection.cursor() as cursor:
-            cursor.execute(f"DROP DATABASE IF EXISTS {database}")
-            cursor.execute(f"CREATE DATABASE {database}")
+@fixture
+def connection():
+    class MockConnection:
+        def __init__(self) -> None:
+            self._opened = []
+            self._closed = []
+            self._execute_statement = ''
+            self._execute_parameters = None
 
-    return database
+        def open(self) -> None:
+            self._opened.append(True)
+
+        def close(self) -> None:
+            self._closed.append(True)
+
+        def execute(self, statement: str,
+                    parameters: Sequence[Any] = [PermissionError]) -> str:
+            self._execute_statement = statement
+            self._execute_parameters = parameters
+            return statement
+
+        def select(self, statement: str,
+                   parameters: Sequence[Any] = []) -> List[Dict[str, Any]]:
+            self._select_statement = statement
+            self._select_parameters = parameters
+            return []
+
+    return MockConnection()
 
 
 @fixture
-def cataloguer(database) -> SchemaCataloguer:
-    dsn = f"dbname={database} user=postgres"
-    schema = 'public'
-    table = '__tenants__'
-    parser = QueryParser()
+def loaded_connection(connection):
+    def loaded_select(self, statement: str,
+                      parameters: Sequence[Any] = []) -> List[Dict[str, Any]]:
+        self._select_statement = statement
+        self._select_parameters = parameters
+        tenant_1_id = '946568c6-f102-40b3-8a64-920d66f4180d'
+        tenant_2_id = 'b5807a8a-8bc1-4d91-98d0-424068494876'
+        return [
+            {'id': tenant_2_id, 'name': 'Google'},
+            {'id': tenant_1_id, 'name': 'Amazon'}
+        ]
 
-    cataloguer = SchemaCataloguer(dsn, schema, table, parser)
+    connection.select = MethodType(loaded_select, connection)
 
-    connection = psycopg2.connect(cataloguer.dsn)
-    connection.autocommit = True
-    with connection.cursor() as cursor:
-        cursor.execute(
-            f"TRUNCATE TABLE {cataloguer.schema}.{cataloguer.table};")
+    return connection
+
+
+@fixture
+def cataloguer(connection) -> SchemaCataloguer:
+    cataloguer = SchemaCataloguer(connection)
 
     return cataloguer
 
@@ -41,39 +66,40 @@ def cataloguer(database) -> SchemaCataloguer:
 @fixture
 def loaded_cataloguer(cataloguer) -> SchemaCataloguer:
     tenant_1_id = '946568c6-f102-40b3-8a64-920d66f4180d'
-    tenant_1_value = json.dumps({
-        'id': tenant_1_id,
-        'name': 'Amazon'
-    })
     tenant_2_id = 'b5807a8a-8bc1-4d91-98d0-424068494876'
-    tenant_2_value = json.dumps({
-        'id': tenant_2_id,
-        'name': 'Google'
-    })
 
-    connection = psycopg2.connect(cataloguer.dsn)
-    connection.autocommit = True
-    with connection.cursor() as cursor:
-        cursor.execute(
-            f"INSERT INTO {cataloguer.schema}.{cataloguer.table} (data)"
-            f"VALUES (%s);", (tenant_1_value,))
-        cursor.execute(
-            f"INSERT INTO {cataloguer.schema}.{cataloguer.table} (data)"
-            f"VALUES (%s);", (tenant_2_value,))
-
-    cataloguer._load()
+    cataloguer.catalog = {
+        tenant_1_id: Tenant(**{
+            'id': tenant_1_id,
+            'name': 'Amazon'
+        }),
+        tenant_2_id: Tenant(**{
+            'id': tenant_2_id,
+            'name': 'Google'
+        })
+    }
 
     return cataloguer
 
 
-def test_schema_cataloguer_setup_catalog(cataloguer):
-    connection = psycopg2.connect(cataloguer.dsn)
-    with connection.cursor() as cursor:
-        cursor.execute(
-            f"SELECT data FROM {cataloguer.schema}.{cataloguer.table}")
-        result = cursor.fetchall()
+def test_schema_connection(connection):
+    connection = connection
+    assert hasattr(connection, 'open')
+    assert hasattr(connection, 'close')
+    assert hasattr(connection, 'execute')
+    assert hasattr(connection, 'select')
 
-    assert result == []
+
+def test_schema_cataloguer_initialization(cataloguer):
+    assert cataloguer.schema == 'public'
+    assert cataloguer.table == '__tenants__'
+    assert isinstance(cataloguer.parser, QueryParser)
+    assert cataloguer.connection._execute_statement == (
+        "CREATE SCHEMA IF NOT EXISTS public; "
+        "CREATE TABLE IF NOT EXISTS public.__tenants__ (data JSONB); "
+        "CREATE UNIQUE INDEX IF NOT EXISTS "
+        "pk___tenants___id ON public.__tenants__ ((data ->> 'id'));"
+    )
 
 
 def test_schema_cataloguer_add_tenant(cataloguer):
@@ -83,14 +109,16 @@ def test_schema_cataloguer_add_tenant(cataloguer):
         name='Microsoft')
     tenant = cataloguer.add_tenant(tenant)
 
-    connection = psycopg2.connect(cataloguer.dsn)
-    with connection.cursor() as cursor:
-        cursor.execute(
-            f"SELECT data FROM {cataloguer.schema}.{cataloguer.table}")
-        result = cursor.fetchall()
+    assert cataloguer.connection._opened == [True, True, True]
+    assert cataloguer.connection._closed == [True, True, True]
 
-    tenant_dict = result[0][0]
-    assert tenant_dict['id'] == tenant_id
+    assert cataloguer.connection._execute_statement == (
+        'INSERT INTO public.__tenants__ (data) VALUES ($1);')
+    tenant_json = next(iter(cataloguer.connection._execute_parameters))
+    tenant_dict = json.loads(tenant_json)
+
+    assert len(tenant_dict['id']) == 36
+    assert tenant_dict['name'] == 'Microsoft'
 
 
 def test_schema_cataloguer_get_tenant(loaded_cataloguer):
@@ -102,6 +130,24 @@ def test_schema_cataloguer_get_tenant(loaded_cataloguer):
 
     tenant_1 = loaded_cataloguer.get_tenant(tenant_1_id)
     assert tenant_1.name == 'Amazon'
+
+    assert loaded_cataloguer.connection._opened == [True, True]
+    assert loaded_cataloguer.connection._closed == [True, True]
+
+
+def test_schema_cataloguer_get_tenant_cached(loaded_cataloguer):
+    loaded_cataloguer.expiration = 9999999999
+    tenant_1_id = '946568c6-f102-40b3-8a64-920d66f4180d'
+    tenant_2_id = 'b5807a8a-8bc1-4d91-98d0-424068494876'
+
+    tenant_2 = loaded_cataloguer.get_tenant(tenant_2_id)
+    assert tenant_2.name == 'Google'
+
+    tenant_1 = loaded_cataloguer.get_tenant(tenant_1_id)
+    assert tenant_1.name == 'Amazon'
+
+    assert loaded_cataloguer.connection._opened == [True]
+    assert loaded_cataloguer.connection._closed == [True]
 
 
 def test_schema_cataloguer_get_tenant_not_found(loaded_cataloguer):
@@ -116,66 +162,10 @@ def test_schema_cataloguer_search_tenants(loaded_cataloguer):
     assert tenants[0].name == 'Amazon'
 
 
-# def test_json_cataloguer_file_preexisting_empty_catalog(tmp_path):
-#     path = tmp_path / 'empty_tenants.json'
-#     with path.open('w') as f:
-#         f.write("")
+def test_schema_cataloguer_load(cataloguer, loaded_connection):
+    cataloguer.connection = loaded_connection
 
-#     parser = QueryParser()
-#     cataloguer = JsonCataloguer(str(path), parser)
-
-#     with path.open() as f:
-#         data = json.load(f)
-#         assert cataloguer.collection in data
-
-
-# def test_json_cataloguer_file_preexisting_correct_catalog(tmp_path):
-#     path = tmp_path / 'correct_tenants.json'
-#     with path.open('w') as f:
-#         json.dump({
-#             "tenants": {}
-#         }, f, indent=2)
-
-#     parser = QueryParser()
-#     cataloguer = JsonCataloguer(str(path), parser)
-
-#     with path.open() as f:
-#         data = json.load(f)
-#         assert cataloguer.collection in data
-
-
-# def test_json_cataloguer_file_incorrect_json_catalog(tmp_path):
-#     path = tmp_path / 'incorrect_tenants.json'
-#     with path.open('w') as f:
-#         f.write("{}")
-
-#     parser = QueryParser()
-#     cataloguer = JsonCataloguer(str(path), parser)
-
-#     with path.open() as f:
-#         data = json.load(f)
-#         assert cataloguer.collection in data
-
-
-# def test_json_cataloguer_search_tenants_empty(cataloguer):
-#     tenant = Tenant(name='Microsoft')
-#     tenants = cataloguer.search_tenants([])
-#     assert len(tenants) == 0
-
-
-# def test_json_cataloguer_search_tenants(
-#         cataloguer: JsonCataloguer):
-#     tenant = Tenant(name='Microsoft')
-#     with Path(cataloguer.path).open('w') as f:
-#         json.dump({
-#             'tenants': {
-#                 '001': vars(Tenant(name='Amazon')),
-#                 '002': vars(Tenant(name='Google')),
-#                 '003': vars(Tenant(name='Microsoft'))
-#             }
-#         }, f, indent=2)
-
-#     cataloguer._load()
-#     tenants = cataloguer.search_tenants(
-#         [('slug', '=', 'amazon')])
-#     assert len(tenants) == 1
+    tenants = cataloguer.search_tenants(
+        [('slug', '=', 'amazon')])
+    assert len(tenants) == 1
+    assert tenants[0].name == 'Amazon'
