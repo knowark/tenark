@@ -1,7 +1,6 @@
-from uuid import uuid4
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any, Optional
-from ..common import QueryParser, QueryDomain
+from typing import List
+from ..common import QueryDomain
 from ..models import Tenant
 
 
