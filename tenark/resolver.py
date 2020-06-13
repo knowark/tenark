@@ -21,8 +21,8 @@ def resolve_cataloguer(options: Dict[str, Any]) -> Cataloguer:
         path = options['catalog_path']
         cataloguer = JsonCataloguer(path)
     elif options.get('cataloguer_kind') == 'schema':
-        dsn = options['catalog_dsn']
-        cataloguer = SchemaCataloguer(dsn)
+        connection = options['catalog_connection']
+        cataloguer = SchemaCataloguer(connection)
     else:
         cataloguer = MemoryCataloguer()
 

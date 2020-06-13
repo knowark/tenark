@@ -1,5 +1,5 @@
 from pytest import raises
-from typing import Dict, Any
+from typing import List, Dict, Sequence, Any
 from tenark.cataloguer import (
     MemoryCataloguer, JsonCataloguer, SchemaCataloguer)
 from tenark.provisioner import (
@@ -29,13 +29,29 @@ def test_resolver_resolve_cataloguer_json(monkeypatch):
     assert isinstance(cataloguer, JsonCataloguer)
 
 
-def xtest_resolver_resolve_cataloguer_schema(monkeypatch):
-    options = {
+def test_resolver_resolve_cataloguer_schema(monkeypatch):
+    class CustomConnection():
+        def open(self) -> None:
+            """Open"""
+
+        def close(self) -> None:
+            """Close"""
+
+        def execute(self, statement: str,
+                    parameters: Sequence[Any] = []) -> str:
+            """Execute"""
+
+        def select(self, statement: str,
+                   parameters: Sequence[Any] = []) -> List[Dict[str, Any]]:
+            """Select"""
+
+    options: Dict[str, Any] = {
         'cataloguer_kind': 'schema'
     }
     with raises(KeyError):
         cataloguer = resolver.resolve_cataloguer(options)
-    options['catalog_dsn'] = 'postgresql://postgres:postgres@localhost/db'
+
+    options['catalog_connection'] = CustomConnection()
     cataloguer = resolver.resolve_cataloguer(options)
 
     assert isinstance(cataloguer, SchemaCataloguer)
