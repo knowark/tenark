@@ -58,3 +58,21 @@ def test_directory_provisioner_provision_tenant(provisioner):
 
     assert len(subdirectories) == 1
     assert 'servagro' == subdirectories[0].name
+
+
+def test_directory_provisioner_provision_tenant_existing_directory(provisioner):
+    tenant = Tenant(id='001', name="Servagro")
+    directory = provisioner.zones['default']
+    existing_directory = Path(directory) / tenant.slug / 'existing'
+    existing_directory.mkdir(parents=True)
+
+    provisioner.provision_tenant(tenant)
+
+    data = Path(provisioner.zones['default'])
+    subdirectories = [
+        directory for directory in data.iterdir()
+        if directory.is_dir()]
+
+    assert len(subdirectories) == 1
+    assert 'servagro' == subdirectories[0].name
+    assert existing_directory.is_dir()
