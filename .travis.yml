@@ -3,7 +3,7 @@ cache: pip
 addons:
   postgresql: "9.6"
 python:
-  - "3.6"
+  - "3.8"
 before_install:
   - sudo -Hiu postgres psql -c "ALTER USER postgres WITH PASSWORD 'postgres';"
   - pip install poetry
