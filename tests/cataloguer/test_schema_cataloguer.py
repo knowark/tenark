@@ -113,6 +113,28 @@ def test_schema_cataloguer_add_tenant(cataloguer):
     assert cataloguer.connection._closed == [True, True, True]
 
     assert cataloguer.connection._execute_statement == (
+        'INSERT INTO public.__tenants__ (data) VALUES (%s);')
+    tenant_json = next(iter(cataloguer.connection._execute_parameters))
+    tenant_dict = json.loads(tenant_json)
+
+    assert len(tenant_dict['id']) == 36
+    assert tenant_dict['name'] == 'Microsoft'
+
+
+def test_schema_cataloguer_add_tenant_index_placeholder(cataloguer):
+    tenant_id = 'ec002b8d-30eb-447a-ac5b-be966763723b'
+    tenant = Tenant(
+        id=tenant_id,
+        name='Microsoft')
+
+    cataloguer.placeholder = '${index}'
+
+    tenant = cataloguer.add_tenant(tenant)
+
+    assert cataloguer.connection._opened == [True, True, True]
+    assert cataloguer.connection._closed == [True, True, True]
+
+    assert cataloguer.connection._execute_statement == (
         'INSERT INTO public.__tenants__ (data) VALUES ($1);')
     tenant_json = next(iter(cataloguer.connection._execute_parameters))
     tenant_dict = json.loads(tenant_json)

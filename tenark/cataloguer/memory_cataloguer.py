@@ -5,10 +5,12 @@ from .cataloguer import Cataloguer
 
 
 class MemoryCataloguer(Cataloguer):
-
     def __init__(self, parser: QueryParser = None) -> None:
         self.parser = parser or QueryParser()
         self.catalog: Dict[str, Tenant] = {}
+
+    def load(self, chache: bool = True) -> None:
+        pass
 
     def add_tenant(self, tenant: Tenant) -> Tenant:
         self.catalog[tenant.id] = tenant

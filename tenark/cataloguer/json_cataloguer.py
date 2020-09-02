@@ -8,7 +8,6 @@ from .cataloguer import Cataloguer
 
 
 class JsonCataloguer(Cataloguer):
-
     def __init__(self, path: str, parser: QueryParser = None) -> None:
         self.path = path
         self.parser = parser or QueryParser()
@@ -19,22 +18,7 @@ class JsonCataloguer(Cataloguer):
         }
         self._setup()
 
-    def _setup(self) -> None:
-        catalog_file = Path(self.path)
-
-        if not catalog_file.exists():
-            with catalog_file.open('w') as f:
-                json.dump(self.catalog_schema, f, indent=2)
-            return
-
-        loaded = self._load()
-        if loaded:
-            return
-
-        with catalog_file.open('w') as f:
-            json.dump(self.catalog_schema, f, indent=2)
-
-    def _load(self) -> bool:
+    def load(self, cache: bool = True) -> None:
         catalog_file = Path(self.path)
         with catalog_file.open('r') as f:
             try:
@@ -42,11 +26,8 @@ class JsonCataloguer(Cataloguer):
                 if self.collection in data:
                     for key, value in data[self.collection].items():
                         self.catalog[key] = Tenant(**value)
-                    return True
             except json.JSONDecodeError as e:
                 pass
-
-        return False
 
     def add_tenant(self, tenant: Tenant) -> Tenant:
         data: Dict[str, Any] = {self.collection: {}}
@@ -59,7 +40,7 @@ class JsonCataloguer(Cataloguer):
         with catalog_file.open('w') as f:
             json.dump(data, f, indent=2)
 
-        self._load()
+        self.load(False)
 
         return tenant
 
@@ -78,3 +59,16 @@ class JsonCataloguer(Cataloguer):
                 tenants.append(tenant)
 
         return tenants
+
+    def _setup(self) -> None:
+        catalog_file = Path(self.path)
+
+        if not catalog_file.exists():
+            with catalog_file.open('w') as f:
+                json.dump(self.catalog_schema, f, indent=2)
+            return
+
+        self.load()
+
+        with catalog_file.open('w') as f:
+            json.dump(self.catalog_schema, f, indent=2)

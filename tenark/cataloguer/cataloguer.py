@@ -8,6 +8,10 @@ class Cataloguer(ABC):
     """Tenant Catalog Supplier."""
 
     @abstractmethod
+    def load(self, cache: bool = True) -> None:
+        "Load method to be implemented."
+
+    @abstractmethod
     def add_tenant(self, tenant: Tenant) -> Tenant:
         "Add tenant method to be implemented."
 

@@ -29,7 +29,7 @@ class SchemaCataloguer(Cataloguer):
                  schema: str = 'public',
                  table: str = '__tenants__',
                  parser: QueryParser = None,
-                 placeholder: str = '${index}',
+                 placeholder: str = '%s',
                  offset=1) -> None:
         self.connection = connection
         self.schema = schema
@@ -43,6 +43,19 @@ class SchemaCataloguer(Cataloguer):
         self.expiration = 0.0
         self._setup()
 
+    def load(self, cache=True) -> None:
+        now = time.time()
+        if cache and self.lifespan and now < self.expiration:
+            return
+
+        self.expiration = now + self.lifespan
+        self.connection.open()
+        query = f"SELECT data FROM {self.schema}.{self.table};"
+        result = self.connection.select(query)
+        for record in result:
+            self.catalog[record['id']] = Tenant(**record)
+        self.connection.close()
+
     def add_tenant(self, tenant: Tenant) -> Tenant:
         self.connection.open()
         data = json.dumps(vars(tenant))
@@ -54,12 +67,12 @@ class SchemaCataloguer(Cataloguer):
 
         self.connection.execute(query, parameters)
         self.connection.close()
-        self._load(False)
+        self.load(False)
 
         return tenant
 
     def get_tenant(self, tenant_id: str) -> Tenant:
-        self._load()
+        self.load()
         tenant = self.catalog.get(tenant_id)
         if not tenant:
             raise TenantRetrievalError(
@@ -67,7 +80,7 @@ class SchemaCataloguer(Cataloguer):
         return tenant
 
     def search_tenants(self, domain: QueryDomain) -> List[Tenant]:
-        self._load()
+        self.load()
         tenants = []
         filter_function = self.parser.parse(domain)
         for tenant in self.catalog.values():
@@ -84,17 +97,4 @@ class SchemaCataloguer(Cataloguer):
             "data JSONB); "
             f"CREATE UNIQUE INDEX IF NOT EXISTS pk_{self.table}_id ON "
             f"{self.schema}.{self.table} ((data ->> 'id'));")
-        self.connection.close()
-
-    def _load(self, cache=True) -> None:
-        now = time.time()
-        if cache and self.lifespan and now < self.expiration:
-            return
-
-        self.expiration = now + self.lifespan
-        self.connection.open()
-        query = f"SELECT data FROM {self.schema}.{self.table};"
-        result = self.connection.select(query)
-        for record in result:
-            self.catalog[record['id']] = Tenant(**record)
         self.connection.close()

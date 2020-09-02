@@ -89,7 +89,7 @@ def test_json_cataloguer_search_tenants(
             }
         }, f, indent=2)
 
-    cataloguer._load()
+    cataloguer.load()
     tenants = cataloguer.search_tenants(
         [('slug', '=', 'amazon')])
     assert len(tenants) == 1
@@ -107,7 +107,7 @@ def test_json_cataloguer_get_tenant(
             }
         }, f, indent=2)
 
-    cataloguer._load()
+    cataloguer.load()
     tenant = cataloguer.get_tenant('002')
     assert tenant.name == 'Google'
 
@@ -123,6 +123,6 @@ def test_json_cataloguer_get_tenant_not_found(
             }
         }, f, indent=2)
 
-    cataloguer._load()
+    cataloguer.load()
     with raises(TenantRetrievalError):
         cataloguer.get_tenant('004')
