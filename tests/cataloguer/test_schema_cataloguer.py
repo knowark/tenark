@@ -47,8 +47,8 @@ def loaded_connection(connection):
         tenant_1_id = '946568c6-f102-40b3-8a64-920d66f4180d'
         tenant_2_id = 'b5807a8a-8bc1-4d91-98d0-424068494876'
         return [
-            {'id': tenant_2_id, 'name': 'Google'},
-            {'id': tenant_1_id, 'name': 'Amazon'}
+            {'data':  {'id': tenant_2_id, 'name': 'Google'}},
+            {'data':  {'id': tenant_1_id, 'name': 'Amazon'}}
         ]
 
     connection.select = MethodType(loaded_select, connection)
@@ -56,14 +56,14 @@ def loaded_connection(connection):
     return connection
 
 
-@fixture
+@ fixture
 def cataloguer(connection) -> SchemaCataloguer:
     cataloguer = SchemaCataloguer(connection)
 
     return cataloguer
 
 
-@fixture
+@ fixture
 def loaded_cataloguer(cataloguer) -> SchemaCataloguer:
     tenant_1_id = '946568c6-f102-40b3-8a64-920d66f4180d'
     tenant_2_id = 'b5807a8a-8bc1-4d91-98d0-424068494876'

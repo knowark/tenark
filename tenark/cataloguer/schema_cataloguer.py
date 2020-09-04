@@ -53,7 +53,7 @@ class SchemaCataloguer(Cataloguer):
         query = f"SELECT data FROM {self.schema}.{self.table};"
         result = self.connection.select(query)
         for record in result:
-            self.catalog[record['id']] = Tenant(**record)
+            self.catalog[record['data']['id']] = Tenant(**record['data'])
         self.connection.close()
 
     def add_tenant(self, tenant: Tenant) -> Tenant:
