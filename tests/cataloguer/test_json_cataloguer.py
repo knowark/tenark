@@ -58,6 +58,22 @@ def test_json_cataloguer_file_preexisting_correct_catalog(tmp_path):
         assert cataloguer.collection in data
 
 
+def test_json_cataloguer_file_preexisting_nonempty_catalog(tmp_path):
+    path = tmp_path / 'correct_tenants.json'
+    with path.open('w') as f:
+        json.dump({
+            "tenants": {'001': {'id': '001', 'name': 'Existing'}}
+        }, f, indent=2)
+
+    parser = QueryParser()
+    cataloguer = JsonCataloguer(str(path), parser)
+
+    with path.open() as f:
+        data = json.load(f)
+        assert cataloguer.collection in data
+        assert data[cataloguer.collection]['001']['name'] == 'Existing'
+
+
 def test_json_cataloguer_file_incorrect_json_catalog(tmp_path):
     path = tmp_path / 'incorrect_tenants.json'
     with path.open('w') as f:

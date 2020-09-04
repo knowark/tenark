@@ -69,6 +69,8 @@ class JsonCataloguer(Cataloguer):
             return
 
         self.load()
+        if self.catalog:
+            return
 
         with catalog_file.open('w') as f:
             json.dump(self.catalog_schema, f, indent=2)
