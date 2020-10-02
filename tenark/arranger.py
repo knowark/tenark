@@ -21,7 +21,7 @@ class Arranger:
             return vars(result)
         except TenantRetrievalError:
             self.create_tenant(tenant_dict)
-            return vars(self.cataloguer.get_tenant(tenant_id))
+            return vars(self.cataloguer.get_tenant(tenant_dict['id']))
 
     def create_tenant(self, tenant_dict: Dict[str, Any]) -> None:
         tenant_dict.setdefault('id', self.identifier.generate_id())
